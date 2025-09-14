@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parrot_messaging/getX/_screenManagement.dart';
-import 'package:parrot_messaging/screens/_splash-screen/splashScreen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  // Flutter binding initialize
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Firebase initialize
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -14,6 +20,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      defaultTransition: Transition.leftToRightWithFade,
+      transitionDuration: const Duration(milliseconds: 250),
       debugShowCheckedModeBanner: false,
       title: 'Parrot',
       theme: ThemeData(
@@ -24,4 +32,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

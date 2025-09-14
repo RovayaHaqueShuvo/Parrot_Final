@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
 import 'package:parrot_messaging/screens/_home-screen/_listView.dart';
 import 'package:parrot_messaging/screens/_onBoarding-screen/_customWidget.dart';
+
+import '../../getX/_screenManagement.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -96,7 +99,12 @@ class _HomescreenState extends State<Homescreen> {
                   ),
                 ],
               ),
-              ChatBody(),
+              ChatBody(
+                onTap: (){
+                  Get.toNamed(Routes.chatBoardScreen);
+                  print('Message Tile Cliked');
+                },
+              ),
             ],
           ),
         ),

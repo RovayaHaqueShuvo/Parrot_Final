@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "838942551991",
+    "firebase_url": "https://parrot-590c6-default-rtdb.firebaseio.com",
+    "project_id": "parrot-590c6",
+    "storage_bucket": "parrot-590c6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838942551991:android:9b10449e8dd49755588232",
+        "android_client_info": {
+          "package_name": "com.example.parrot_messaging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZ8-UzkmdXlF6fPVpb-lQbObe9H9vRMvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

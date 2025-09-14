@@ -27,7 +27,7 @@ class _SplashscreenState extends State<Splashscreen> {
         children: [
           Align(
             alignment: Alignment.center,
-            child: Image.asset("assets/parrot.png",
+            child: Image.asset("assets/parrot_1.png",
             height: MediaQuery.of(context).size.height*.2,
             fit: BoxFit.cover,),
           ),

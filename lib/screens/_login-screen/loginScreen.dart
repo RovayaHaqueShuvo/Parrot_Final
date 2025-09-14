@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:parrot_messaging/getX/_screenManagement.dart';
 import 'package:parrot_messaging/globalWidget/_customeButton.dart';
 import 'package:parrot_messaging/globalWidget/_customeTextField.dart';
 
 import '../_onBoarding-screen/_customWidget.dart';
+import 'buttonFunction.dart';
 
 class Loginscreen extends StatelessWidget {
   const Loginscreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final email = TextEditingController();
-    final password = TextEditingController();
+    final controller = Get.put(ButtonfunctionManagement());
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -62,9 +61,15 @@ class Loginscreen extends StatelessWidget {
                 children: [
                   ImageIconBorder(imageName: "assets/fb.png", onPressed: () {}),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                  ImageIconBorder(imageName: "assets/google.png", onPressed: () {}),
+                  ImageIconBorder(
+                    imageName: "assets/google.png",
+                    onPressed: () {},
+                  ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                  ImageIconBorder(imageName: "assets/apple.png", onPressed: () {}),
+                  ImageIconBorder(
+                    imageName: "assets/apple.png",
+                    onPressed: () {},
+                  ),
                 ],
               ),
               SizedBox(height: MediaQuery.of(context).size.height * .02),
@@ -80,22 +85,53 @@ class Loginscreen extends StatelessWidget {
               CustomTextField(
                 hintText: "Email",
                 prefixIcon: Icons.mail_outline,
-                controller: email,
+                controller: controller.email,
               ),
               CustomTextField(
                 hintText: "Password",
                 prefixIcon: Icons.lock_outline,
                 isPassword: true,
-                controller: password,
+                controller: controller.password,
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * .16),
+              Obx(
+                () =>
+                    controller.isLoading.value==1
+                        ? Column(
+                          children: [
+                            Center(
+                              child: Container(
+                                margin:EdgeInsets.all(MediaQuery.of(context).size.height * .03),
+                                width: MediaQuery.of(context).size.height * .14,
+                                height:
+                                    MediaQuery.of(context).size.height * .14,
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.7),
+                                  // semi-transparent background
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: EdgeInsets.all(20),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 6, // thickness of the circle
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.blueAccent,
+                                  ),
+                                  backgroundColor: Colors.white24,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ):SizedBox(
+                      height: MediaQuery.of(context).size.height * .16,
+                    ),
+              ),
+
               CustomeBotton(
                 barColor: Colors.blue,
                 text: "Let's Login",
                 fontSize: 24,
                 fontColor: Colors.white,
                 barRadiusColor: Colors.white24,
-                OnPressed: ()=>Get.toNamed(Routes.homeScreen),
+                OnPressed: () => controller.loginWithEmaiPass(),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * .02),
               CustomeBotton(
@@ -104,8 +140,8 @@ class Loginscreen extends StatelessWidget {
                 fontSize: 24,
                 fontColor: Colors.blue,
                 barRadiusColor: Colors.black12,
-                OnPressed: ()=>Get.toNamed(Routes.registerScreen),
-              )
+                OnPressed: () => Get.toNamed(Routes.registerScreen),
+              ),
             ],
           ),
         ),

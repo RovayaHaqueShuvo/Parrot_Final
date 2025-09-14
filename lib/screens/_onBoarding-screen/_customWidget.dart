@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 
 class ImageIconBorder extends StatelessWidget {
   final String imageName;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final double size;
   final double fromletfSpacing;
+
   // size of the circle
 
   const ImageIconBorder({
     super.key,
     required this.imageName,
-    required this.onPressed,
+    this.onPressed,
     this.size = 55, // default size
     this.fromletfSpacing = 0, // default size
   });
@@ -25,7 +26,7 @@ class ImageIconBorder extends StatelessWidget {
         customBorder: const CircleBorder(),
         onTap: onPressed,
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal:  fromletfSpacing, ),
+          margin: EdgeInsets.symmetric(horizontal: fromletfSpacing),
           width: size,
           height: size,
           decoration: BoxDecoration(
@@ -33,12 +34,7 @@ class ImageIconBorder extends StatelessWidget {
             border: Border.all(color: Colors.grey, width: 1),
           ),
           padding: const EdgeInsets.all(5),
-          child: ClipOval(
-            child: Image.asset(
-              imageName,
-              fit: BoxFit.contain,
-            ),
-          ),
+          child: ClipOval(child: Image.asset(imageName, fit: BoxFit.contain)),
         ),
       ),
     );
