@@ -5,6 +5,8 @@ import 'package:parrot_messaging/screens/_onBoarding-screen/onBoardingScreen.dar
 import 'package:parrot_messaging/screens/_splash-screen/splashScreen.dart';
 import 'package:parrot_messaging/screens/_userProfile-screen/userProfileScreen.dart';
 
+import '../screens/_home-screen/_bottomNotification.dart';
+import '../screens/_home-screen/_menuSetting.dart';
 import '../screens/_login-screen/loginScreen.dart';
 import '../screens/_signUp-screen/signUpScreen.dart';
 
@@ -16,6 +18,8 @@ class Routes {
   static String homeScreen = "/home";
   static String chatBoardScreen = "/chatBoard";
   static String userProfileScreen = "/userProfile";
+  static String homeScreenSetting = "/homeScreenSetting";
+  static String bottomNotification = "/bottomNotification";
 }
 
 class RoutesPages {
@@ -27,5 +31,7 @@ class RoutesPages {
     GetPage(name: Routes.homeScreen, page: () => Homescreen()),
     GetPage(name: Routes.chatBoardScreen, page: () => Chatboardscreen()),
     GetPage(name: Routes.userProfileScreen, page: () => Userprofilescreen()),
+    GetPage(name: Routes.homeScreenSetting, page: () => MenuSetting()),
+    GetPage(name: Routes.bottomNotification, page: () => BottomNotification()),
   ];
 }

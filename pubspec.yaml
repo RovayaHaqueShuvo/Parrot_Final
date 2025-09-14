@@ -39,6 +39,9 @@ dependencies:
   firebase_auth:
   firebase_messaging:
   firebase_storage:
+  cloud_firestore:
+  cloudinary_sdk:
+  internet_connection_checker:
 
 dev_dependencies:
   flutter_test:

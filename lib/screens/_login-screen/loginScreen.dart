@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parrot_messaging/_gobal-supply/_internetConnection.dart';
 import 'package:parrot_messaging/getX/_screenManagement.dart';
 import 'package:parrot_messaging/globalWidget/_customeButton.dart';
 import 'package:parrot_messaging/globalWidget/_customeTextField.dart';
 
 import '../_onBoarding-screen/_customWidget.dart';
-import 'buttonFunction.dart';
+import 'loginButtonFunction.dart';
 
 class Loginscreen extends StatelessWidget {
   const Loginscreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ButtonfunctionManagement());
+    final controller = Get.put(LoginButtonfunctionManagement());
+    final networkController = Get.put(NetworkController());
+
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -20,6 +23,16 @@ class Loginscreen extends StatelessWidget {
           leading: IconButton(
             onPressed: () => Get.back(),
             icon: Icon(Icons.arrow_back),
+          ),
+          centerTitle: true,
+          title: Obx(
+            () =>
+                networkController.isConnected.value
+                    ? Text("")
+                    : Text(
+                      "❌ No Internet Connection",
+                      style: TextStyle(color: Colors.red, fontSize: 16),
+                    ),
           ),
         ),
         body: SingleChildScrollView(
@@ -95,12 +108,14 @@ class Loginscreen extends StatelessWidget {
               ),
               Obx(
                 () =>
-                    controller.isLoading.value==1
+                    controller.isLoading.value == 1
                         ? Column(
                           children: [
                             Center(
                               child: Container(
-                                margin:EdgeInsets.all(MediaQuery.of(context).size.height * .03),
+                                margin: EdgeInsets.all(
+                                  MediaQuery.of(context).size.height * .03,
+                                ),
                                 width: MediaQuery.of(context).size.height * .14,
                                 height:
                                     MediaQuery.of(context).size.height * .14,
@@ -120,9 +135,10 @@ class Loginscreen extends StatelessWidget {
                               ),
                             ),
                           ],
-                        ):SizedBox(
-                      height: MediaQuery.of(context).size.height * .16,
-                    ),
+                        )
+                        : SizedBox(
+                          height: MediaQuery.of(context).size.height * .16,
+                        ),
               ),
 
               CustomeBotton(

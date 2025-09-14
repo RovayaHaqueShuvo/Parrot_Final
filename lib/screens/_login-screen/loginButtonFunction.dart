@@ -6,7 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 
 import '../../getX/_screenManagement.dart';
 
-class ButtonfunctionManagement extends GetxController {
+class LoginButtonfunctionManagement extends GetxController {
   final email = TextEditingController();
   final password = TextEditingController();
   RxInt isLoading = RxInt(0);

@@ -4,7 +4,9 @@ import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
 import 'package:parrot_messaging/screens/_home-screen/_listView.dart';
 import 'package:parrot_messaging/screens/_onBoarding-screen/_customWidget.dart';
 
+import '../../_gobal-supply/_internetConnection.dart';
 import '../../getX/_screenManagement.dart';
+import '_bottomNavigationController.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -14,7 +16,7 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  int _selectedIndex = 0;
+
 
   static const List<Widget> _pages = <Widget>[
     Center(child: Text('Home Page')),
@@ -22,11 +24,8 @@ class _HomescreenState extends State<Homescreen> {
     Center(child: Text('Profile Page')),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  final NetworkController networkController = Get.put(NetworkController());
+  final BottomNavigationController bottomNavigationController = Get.put(BottomNavigationController());
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class _HomescreenState extends State<Homescreen> {
       child: Scaffold(
         backgroundColor: Color(0xFF012B0D),
         appBar: AppBar(
-          backgroundColor:Color(0xFF012B0D),
+          backgroundColor: Color(0xFF012B0D),
           leading: IconButton(
             onPressed: () {},
             icon: Icon(Icons.search_outlined),
@@ -49,13 +48,21 @@ class _HomescreenState extends State<Homescreen> {
             ),
           ),
           centerTitle: true,
-          title: Text(
-            "H O M E",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          title: Obx(
+            () =>
+                networkController.isConnected.value
+                    ? Text(
+                      "H O M E",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                    : Text(
+                      "❌ No Internet Connection",
+                      style: TextStyle(color: Colors.red, fontSize: 16),
+                    ),
           ),
           actions: [
             ImageIconBorder(
@@ -100,7 +107,7 @@ class _HomescreenState extends State<Homescreen> {
                 ],
               ),
               ChatBody(
-                onTap: (){
+                onTap: () {
                   Get.toNamed(Routes.chatBoardScreen);
                   print('Message Tile Cliked');
                 },
@@ -108,14 +115,13 @@ class _HomescreenState extends State<Homescreen> {
             ],
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          selectedItemColor: Colors.green,
+        bottomNavigationBar: Obx(()=>BottomNavigationBar(
+          currentIndex: bottomNavigationController.selectedIndex.value,
+          onTap: bottomNavigationController.onItemTapped,
           unselectedItemColor: Colors.grey,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.mark_chat_unread),
+              icon: Icon(Icons.mark_chat_unread,color: Colors.green,),
               label: 'Chats',
             ),
             BottomNavigationBarItem(
@@ -124,7 +130,7 @@ class _HomescreenState extends State<Homescreen> {
             ),
             BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
           ],
-        ),
+        ),),
       ),
     );
   }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parrot_messaging/_gobal-supply/_internetConnection.dart';
 import 'package:parrot_messaging/globalWidget/_customeButton.dart';
 import 'package:parrot_messaging/globalWidget/_customeTextField.dart';
 import 'package:parrot_messaging/screens/_onBoarding-screen/_customWidget.dart';
+import 'package:parrot_messaging/screens/_signUp-screen/signupButtonFunction.dart';
 
 import '../../getX/_screenManagement.dart';
 
@@ -11,16 +13,23 @@ class Signupscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final name= TextEditingController();
-    final email= TextEditingController();
-    final password= TextEditingController();
-    final conpassword= TextEditingController();
+    final controller = Get.put(SignUpButtonfunctionManagement());
+    final networkController = Get.put(NetworkController());
 
     return SafeArea(child: Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         leading: IconButton(onPressed: ()=>Get.back(), icon: Icon(Icons.arrow_back)),
+        centerTitle: true,
+          title: Obx(
+                () =>
+            networkController.isConnected.value
+                ? Text("")
+                : Text(
+              "❌ No Internet Connection",
+              style: TextStyle(color: Colors.red, fontSize: 16),
+            ),
+          )
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(32),
@@ -59,33 +68,63 @@ class Signupscreen extends StatelessWidget {
             CustomTextField(
               hintText: "Full Name",
               prefixIcon: Icons.drive_file_rename_outline_rounded,
-              controller: name,
+              controller: controller.name,
             ),
             CustomTextField(
               hintText: "Email",
               prefixIcon: Icons.mail_outline,
-              controller: email,
+              controller: controller.email,
             ),
             CustomTextField(
               hintText: "Password",
               prefixIcon: Icons.lock_open,
               isPassword: true,
-              controller: password,
+              controller: controller.password,
             ),
             CustomTextField(
               hintText: "Confirm Password",
               prefixIcon: Icons.lock_outline,
               isPassword: true,
-              controller: conpassword,
+              controller: controller.confirmpassword,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * .16),
+            Obx(
+                  () =>
+              controller.isLoading.value==1
+                  ? Column(
+                children: [
+                  Center(
+                    child: Container(
+                      margin:EdgeInsets.all(MediaQuery.of(context).size.height * .03),
+                      width: MediaQuery.of(context).size.height * .14,
+                      height:
+                      MediaQuery.of(context).size.height * .14,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        // semi-transparent background
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: EdgeInsets.all(20),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 6, // thickness of the circle
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.blueAccent,
+                        ),
+                        backgroundColor: Colors.white24,
+                      ),
+                    ),
+                  ),
+                ],
+              ):SizedBox(
+                height: MediaQuery.of(context).size.height * .16,
+              ),
+            ),
             CustomeBotton(
               barColor: Colors.blue,
               text: "Sign Up",
               fontSize: 24,
               fontColor: Colors.white,
               barRadiusColor: Colors.white24,
-              OnPressed: () {},
+              OnPressed: ()=>controller.signUpWithEmailPass(),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * .02),
             CustomeBotton(
