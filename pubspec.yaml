@@ -37,6 +37,12 @@ dependencies:
   get:
   firebase_core:
   firebase_auth:
+  sign_in_with_apple:
+  flutter_facebook_auth: ^7.0.0
+  google_sign_in: ^6.2.1
+  cached_network_image: ^3.2.3
+  octo_image:
+  flutter_cache_manager:
   firebase_messaging:
   firebase_storage:
   cloud_firestore:

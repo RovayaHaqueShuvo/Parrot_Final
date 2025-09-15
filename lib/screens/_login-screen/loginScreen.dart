@@ -72,7 +72,13 @@ class Loginscreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ImageIconBorder(imageName: "assets/fb.png", onPressed: () {}),
+                  ImageIconBorder(
+                    imageName: "assets/fb.png",
+                    onPressed: () {
+                      controller.signInWithGoogle();
+                      print("pressed google");
+                    },
+                  ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                   ImageIconBorder(
                     imageName: "assets/google.png",

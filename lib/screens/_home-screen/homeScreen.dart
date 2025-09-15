@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
@@ -5,6 +6,7 @@ import 'package:parrot_messaging/screens/_home-screen/_listView.dart';
 import 'package:parrot_messaging/screens/_onBoarding-screen/_customWidget.dart';
 
 import '../../_gobal-supply/_internetConnection.dart';
+import '../../_gobal-supply/_loggedUser.dart';
 import '../../getX/_screenManagement.dart';
 import '_bottomNavigationController.dart';
 
@@ -26,6 +28,7 @@ class _HomescreenState extends State<Homescreen> {
 
   final NetworkController networkController = Get.put(NetworkController());
   final BottomNavigationController bottomNavigationController = Get.put(BottomNavigationController());
+  final CurrentLoggedUser currentLoggedUserController = Get.put(CurrentLoggedUser());
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +69,12 @@ class _HomescreenState extends State<Homescreen> {
           ),
           actions: [
             ImageIconBorder(
-              imageName: 'assets/parrot.png',
+              index: 1,
+              imageName: FirebaseAuth.instance.currentUser!.photoURL.toString(),
               fromletfSpacing: 12,
-              onPressed: () {},
+              onPressed: () {
+                print(FirebaseAuth.instance.currentUser!.photoURL.toString());
+              },
               size: 42,
             ),
           ],
@@ -90,7 +96,8 @@ class _HomescreenState extends State<Homescreen> {
                   ),
                   SizedBox(width: 10),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                    },
                     child: Text(
                       "Unread",
                       style: TextStyle(color: Colors.grey, fontSize: 20),
