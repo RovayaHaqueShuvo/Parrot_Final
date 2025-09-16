@@ -6,7 +6,8 @@ import 'package:parrot_messaging/screens/_splash-screen/splashScreen.dart';
 import 'package:parrot_messaging/screens/_userProfile-screen/userProfileScreen.dart';
 
 import '../screens/_home-screen/_bottomNotification.dart';
-import '../screens/_home-screen/_menuSetting.dart';
+import '../screens/_home-screen/_menuSetting/_menuSetting.dart';
+import '../screens/_home-screen/_menuSetting/_userProfileSetting/_userProfileSetting.dart';
 import '../screens/_login-screen/loginScreen.dart';
 import '../screens/_signUp-screen/signUpScreen.dart';
 
@@ -20,6 +21,7 @@ class Routes {
   static String userProfileScreen = "/userProfile";
   static String homeScreenSetting = "/homeScreenSetting";
   static String bottomNotification = "/bottomNotification";
+  static String userProfileSetting = "/userProfileSetting";
 }
 
 class RoutesPages {
@@ -33,5 +35,6 @@ class RoutesPages {
     GetPage(name: Routes.userProfileScreen, page: () => Userprofilescreen()),
     GetPage(name: Routes.homeScreenSetting, page: () => MenuSetting()),
     GetPage(name: Routes.bottomNotification, page: () => BottomNotification()),
+    GetPage(name: Routes.userProfileSetting, page: () => UserProfileSetting()),
   ];
 }

@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import '../../Utills/_constant.dart';
 import '../../getX/_screenManagement.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -146,8 +148,23 @@ class LoginButtonfunctionManagement extends GetxController {
         // slide in fast
         reverseAnimationCurve: Curves.easeInCubic, // hide slowly
       );
-
       print("✅ Login successful: ${userCredential.user?.uid}");
+
+      User? user = userCredential.user;
+
+      if (user != null) {
+        // 2️⃣ Save user data in Firestore
+        await FirebaseFirestore.instance
+            .collection(USER_DETAILS) // collection name
+            .doc(user.email) // document id = uid
+            .set({
+          PHOTO_URL: user.photoURL,
+          UID: user.uid,
+          NAME: user.displayName,
+          EMAIL: user.email,
+          TIME: FieldValue.serverTimestamp(),
+        });
+      }
 
       // Navigate to next page (Home)
       Get.offAllNamed('/home'); // <-- তোমার next page route দিন

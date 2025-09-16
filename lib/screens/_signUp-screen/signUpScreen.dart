@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:parrot_messaging/_gobal-supply/_internetConnection.dart';
 import 'package:parrot_messaging/globalWidget/_customeButton.dart';
 import 'package:parrot_messaging/globalWidget/_customeTextField.dart';
-import 'package:parrot_messaging/screens/_onBoarding-screen/_customWidget.dart';
+
 import 'package:parrot_messaging/screens/_signUp-screen/signupButtonFunction.dart';
 
 import '../../getX/_screenManagement.dart';
