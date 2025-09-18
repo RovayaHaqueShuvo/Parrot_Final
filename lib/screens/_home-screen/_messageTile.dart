@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:parrot_messaging/_gobal-supply/_loggedUser.dart';
 import 'package:parrot_messaging/screens/_home-screen/_chatsPerson.dart';
 
-class ChatBody extends StatelessWidget {
-  final VoidCallback  onTap;
-  const ChatBody({super.key,required this.onTap});
+class MessageTiles extends StatelessWidget {
+  final CurrentLoggedUser currentLoggedUser;
+  final VoidCallback onTap;
+
+  const MessageTiles({
+    super.key,
+    required this.onTap,
+    required this.currentLoggedUser,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +29,24 @@ class ChatBody extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 08),
-        child: ListView.builder(
-          itemCount: 20,
-          itemBuilder: (context, index) {
-            return MessageTile(
-              onTap: onTap,
-            );
-          },
+        child: LiquidPullToRefresh(
+          color: Colors.tealAccent,                // progress color
+          backgroundColor: Colors.lightBlueAccent,     // drop-এর background
+          height: 80,                       // drop height
+          borderWidth: 3.0,                  // drop border
+          animSpeedFactor: 1.5,              // animation smoothness
+          showChildOpacityTransition: true,  // fade-in effect
+          springAnimationDurationInMilliseconds: 600,
+          onRefresh: ()=> currentLoggedUser.fetchAllUsers(),
+          child: Obx(
+            () => ListView.builder(
+              itemCount: currentLoggedUser.userEmails.length,
+              itemBuilder: (context, index) {
+                final userDetails = currentLoggedUser.userEmails[index];
+                return MessageTile(user: userDetails, onTap: onTap);
+              },
+            ),
+          ),
         ),
       ),
     );

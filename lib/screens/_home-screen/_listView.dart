@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:parrot_messaging/_gobal-supply/_loggedUser.dart';
 
 class CustomListView extends StatelessWidget {
   final int itemCount;
+  final CurrentLoggedUser currentLoggedUserController;
 
-  const CustomListView({super.key, this.itemCount = 100});
+  const CustomListView({
+    super.key,
+    this.itemCount = 100,
+    required this.currentLoggedUserController,
+  });
 
   @override
   Widget build(BuildContext context) {

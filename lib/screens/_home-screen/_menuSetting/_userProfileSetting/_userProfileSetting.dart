@@ -64,7 +64,7 @@ class UserProfileSetting extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  currentLoggedUser.email.value,
+                  currentLoggedUser.currentEmail.value,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,

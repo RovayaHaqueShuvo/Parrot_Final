@@ -48,6 +48,7 @@ dependencies:
   cloud_firestore:
   cloudinary_sdk:
   internet_connection_checker:
+  liquid_pull_to_refresh:
 
 dev_dependencies:
   flutter_test:

@@ -20,10 +20,21 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+  @override
+  void initState() {
+    final CurrentLoggedUser currentLoggedUserController = Get.put(
+      CurrentLoggedUser(),
+    );
+    currentLoggedUserController.getCurrentUserDetailsLoggedGoogle();
+    currentLoggedUserController.fetchAllUsers();
+    super.initState();
+  }
+
   final NetworkController networkController = Get.put(NetworkController());
   final BottomNavigationController bottomNavigationController = Get.put(
     BottomNavigationController(),
   );
+
   final CurrentLoggedUser currentLoggedUserController = Get.put(
     CurrentLoggedUser(),
   );
@@ -74,23 +85,24 @@ class _HomescreenState extends State<Homescreen> {
                       ),
             ),
             actions: [
-              ImageIconBorder(
-                index: 1,
-                imageName:
-                    FirebaseAuth.instance.currentUser!.photoURL.toString(),
-                fromletfSpacing: 12,
-                onPressed: () {
-                  print(FirebaseAuth.instance.currentUser!.photoURL.toString());
-                },
-                size: 42,
-              ),
+              Obx(() => ImageIconBorder(
+          index: 1,
+          imageName: currentLoggedUserController.photourl.value.isNotEmpty
+              ? currentLoggedUserController.photourl.value
+              : "assets/images/parrot.png", // ✅ এখানে কাজ করবে
+          fromletfSpacing: 12,
+          onPressed: () {
+            print(currentLoggedUserController.userEmails());
+          },
+          size: 42,
+        )),
             ],
           ),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                CustomListView(),
+                CustomListView(currentLoggedUserController: currentLoggedUserController,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -119,7 +131,8 @@ class _HomescreenState extends State<Homescreen> {
                     ),
                   ],
                 ),
-                ChatBody(
+                MessageTiles(
+                  currentLoggedUser: currentLoggedUserController,
                   onTap: () {
                     Get.toNamed(Routes.chatBoardScreen);
                     print('Message Tile Cliked');

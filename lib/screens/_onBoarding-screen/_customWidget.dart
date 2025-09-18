@@ -47,12 +47,23 @@ class ImageIconBorder extends StatelessWidget {
                           (context) =>
                               Center(child: CircularProgressIndicator()),
                       errorBuilder:
-                          (context, error, stackTrace) => Icon(Icons.error),
+                          (context, error, stackTrace) => Stack(
+                            children: [
+                              Image.asset(
+                                'assets/parrot.png',
+                                fit: BoxFit.contain,
+                              ),
+                              Align(
+                                alignment: Alignment.center,
+                                child: Icon(Icons.error),
+                              ),
+                            ],
+                          ),
                       fit: BoxFit.cover,
                       width: 80,
                       height: 80,
                     )
-                    : Image.asset(imageName, fit: BoxFit.contain),
+                    : Image.asset('assets/parrot.png', fit: BoxFit.contain),
           ),
         ),
       ),
