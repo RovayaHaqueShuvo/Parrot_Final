@@ -25,8 +25,12 @@ class _HomescreenState extends State<Homescreen> {
     final CurrentLoggedUser currentLoggedUserController = Get.put(
       CurrentLoggedUser(),
     );
+    currentLoggedUserController.fetchActiveOthersUsers();
+    final NetworkController networkController = Get.put(NetworkController());
     currentLoggedUserController.getCurrentUserDetailsLoggedGoogle();
     currentLoggedUserController.fetchAllUsers();
+    // networkController.setUserActive();
+    networkController.bindUserStatus();
     super.initState();
   }
 
@@ -94,7 +98,7 @@ class _HomescreenState extends State<Homescreen> {
           onPressed: () {
             print(currentLoggedUserController.userEmails());
           },
-          size: 42,
+          size: 42, controller: networkController,
         )),
             ],
           ),

@@ -85,7 +85,12 @@ class UserProfileSetting extends StatelessWidget {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.001),
                 CustomeListTile(
-                  tileIcon: Icon( Icons.circle, color: Colors.green),
+                  tileIcon: Obx(
+                    () =>
+                        networkController.isActive.value
+                            ? Icon(Icons.circle, color: Colors.green)
+                            : Icon(Icons.circle, color: Colors.grey),
+                  ),
                   tileTitle: Text(
                     "A C T I V E  S T A T U S",
                     style: TextStyle(
@@ -95,18 +100,55 @@ class UserProfileSetting extends StatelessWidget {
                     ),
                   ),
                   tileColor: Colors.white,
-                  tileSubtitle: Text(
-                    "online",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white70,
+                  tileSubtitle: Obx(
+                    () =>
+                        networkController.isActive.value
+                            ? Text(
+                              "Online",
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                            : Text(
+                              "Offline",
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                  ),
+                  trailing: Obx(
+                    () => Switch(
+                      value: networkController.isActive.value,
+                      onChanged: (value) async {
+                        // আগে একটা confirmation dialog দেখাই
+                        Get.defaultDialog(
+                          title: "Confirmation",
+                          middleText:
+                              value
+                                  ? "Do you really want to turn this ON?"
+                                  : "Do you really want to turn this OFF?",
+                          textCancel: "No",
+                          textConfirm: "Yes",
+                          confirmTextColor: Colors.white,
+                          onConfirm: () {
+                            networkController.isActive.value = value;
+
+                            /// 🔥 Firebase এও update করতে চাইলে এখানে call করো
+                            networkController.updateUserStatus(value);
+
+                            Get.back(); // dialog বন্ধ করবে
+                          },
+                          onCancel: () {
+                            Get.back(); // cancel করলে dialog বন্ধ
+                          },
+                        );
+                      },
                     ),
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.001),
                 CustomeListTile(
-                  tileIcon: Icon( Icons.alternate_email, color: Colors.white),
+                  tileIcon: Icon(Icons.alternate_email, color: Colors.white),
                   tileTitle: Text(
                     "U S E R  N A M E",
                     style: TextStyle(

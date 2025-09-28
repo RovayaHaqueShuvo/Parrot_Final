@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:parrot_messaging/getX/_screenManagement.dart';
 
 import '../../globalWidget/_customeButton.dart';
+import '../_login-screen/loginButtonFunction.dart';
 import '_customWidget.dart';
 
 class Onboardingscreen extends StatelessWidget {
@@ -10,6 +11,7 @@ class Onboardingscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(LoginButtonfunctionManagement());
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -54,7 +56,7 @@ class Onboardingscreen extends StatelessWidget {
               children: [
                 ImageIconBorder(imageName: "assets/fb.png", onPressed: () {}),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                ImageIconBorder(imageName: "assets/google.png", onPressed: () {}),
+                ImageIconBorder(imageName: "assets/google.png", onPressed: () {controller.signInWithGoogle();}),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                 ImageIconBorder(imageName: "assets/apple.png", onPressed: () {}),
               ],

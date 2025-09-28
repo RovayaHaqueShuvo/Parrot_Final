@@ -5,13 +5,22 @@ class CustomeListTile extends StatelessWidget {
   final tileTitle;
   final tileColor;
   final tileSubtitle;
-  const CustomeListTile({super.key, this.tileIcon, this.tileTitle, this.tileColor, this.tileSubtitle});
+  final trailing;
+
+  const CustomeListTile({
+    super.key,
+    this.tileIcon,
+    this.tileTitle,
+    this.tileColor,
+    this.tileSubtitle,
+    this.trailing,
+  });
 
   @override
   Widget build(BuildContext context) {
-
     return ListTile(
-      leading:tileIcon,
+      trailing: trailing,
+      leading: tileIcon,
       title: tileTitle,
       textColor: tileColor,
       subtitle: tileSubtitle,

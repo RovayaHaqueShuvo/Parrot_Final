@@ -68,7 +68,7 @@ class MenuSetting extends StatelessWidget {
                     fontSize: 18,
                     fontColor: Colors.black,
                     barRadiusColor: Colors.black,
-                    OnPressed: () => Get.toNamed(Routes.userProfileSetting),
+                    OnPressed: () {},
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.018),
                   CustomeBotton(

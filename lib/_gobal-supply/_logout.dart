@@ -1,12 +1,30 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:parrot_messaging/getX/_screenManagement.dart';
 
 class AuthController extends GetxController {
   void logout() async {
     try {
+      // Firebase থেকে sign out
       await FirebaseAuth.instance.signOut();
-      Get.offAllNamed('/login');
+
+      // Local storage clear (GetStorage ব্যবহার করলে)
+      final box = GetStorage();
+      await box.erase();
+
+      // যদি SharedPreferences ব্যবহার করো তাহলে:
+      // final prefs = await SharedPreferences.getInstance();
+      // await prefs.clear();
+
+      // Hive হলে:
+      // await Hive.deleteFromDisk();
+
+      // Login Screen এ redirect
+      Get.offAllNamed(Routes.loginScreen);
+
+      // Snackbar দেখাও
       Get.snackbar(
         "✅ Logout Successfully",
         "You have successfully logged out from 'Parrot'",
@@ -15,15 +33,12 @@ class AuthController extends GetxController {
         colorText: Colors.white,
         margin: EdgeInsets.all(12),
         borderRadius: 12,
-        icon: Icon(Icons.error, color: Colors.white),
+        icon: Icon(Icons.logout, color: Colors.white), // 👈 logout icon দিলাম
         shouldIconPulse: true,
         duration: Duration(seconds: 2),
-        // total visible time
         animationDuration: Duration(milliseconds: 150),
-        // fast slide-in
         forwardAnimationCurve: Curves.easeOut,
-        // slide in fast
-        reverseAnimationCurve: Curves.easeInCubic, // hide slowly
+        reverseAnimationCurve: Curves.easeInCubic,
       );
     } catch (e) {
       Get.snackbar(
@@ -35,4 +50,5 @@ class AuthController extends GetxController {
       );
     }
   }
+
 }

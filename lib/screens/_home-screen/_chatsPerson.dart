@@ -27,6 +27,7 @@ class MessageTile extends StatelessWidget {
         child: ListTile(
           onTap: onTap,
           leading: ImageIconBorder(
+            activeCode: user.isActive?1:0,
             index: 1,
             imageName:
                 user.photoUrl.isNotEmpty

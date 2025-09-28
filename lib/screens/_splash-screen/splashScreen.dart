@@ -22,6 +22,9 @@ class _SplashscreenState extends State<Splashscreen> {
       if (user != null) {
         // already logged in → go Home
         Get.offAllNamed(Routes.homeScreen);
+
+
+
       } else {
         // not logged in → go OnBoarding/Login
         Get.offAllNamed(Routes.onBoardingScreen);

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:parrot_messaging/Utills/_constant.dart';
 
 import '../models/_userModel.dart';
+import '_internetConnection.dart';
 
 class CurrentLoggedUser extends GetxController {
   final _user = FirebaseAuth.instance.currentUser;
@@ -12,6 +13,7 @@ class CurrentLoggedUser extends GetxController {
   RxString photourl = RxString('');
   RxString currentEmail = RxString('');
   RxList userEmails = RxList<UserModel>([]);
+  RxList<Map<String, dynamic>> activeUsersData = <Map<String, dynamic>>[].obs;
 
   Future<void> getCurrentUserDetailsLoggedGoogle() async {
     DocumentSnapshot doc =
@@ -26,6 +28,7 @@ class CurrentLoggedUser extends GetxController {
       name.value = data['NAME'];
       currentEmail.value = data['EMAIL'];
       photourl.value = data['PHOTO_URL'];
+
       print("User UID: ${data['UID']}");
       print("User Name: ${data['NAME']}");
       print("User Email: ${data['EMAIL']}");
@@ -35,14 +38,42 @@ class CurrentLoggedUser extends GetxController {
     }
   }
 
-  Future<void> fetchAllUsers() async {
-    QuerySnapshot snapshot =
-    await FirebaseFirestore.instance.collection("USER_DETAILS").get();
+  // Future<void> fetchAllUsers() async {
+  //   QuerySnapshot snapshot =
+  //   await FirebaseFirestore.instance.collection("USER_DETAILS").get();
+  //
+  //   userEmails.value = snapshot.docs.map((doc) {
+  //     final data = doc.data() as Map<String, dynamic>;
+  //     return UserModel.fromMap(data);
+  //   }).where((user) => user.email != currentEmail.value) // 🔥 filter
+  //       .toList();
+  // }
+  Future<void> fetchActiveOthersUsers() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection(USER_DETAILS)
+        .where("isActive", isEqualTo: true)
+        .get();
 
-    userEmails.value = snapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
+    // প্রতিটা document এর data map আকারে activeUsersData variable-এ set করা
+    activeUsersData.value = snapshot.docs
+        .map((doc) => doc.data())
+        .toList();
+  }
+
+
+  Future<void> fetchAllUsers() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection("USER_DETAILS")
+        .where("isActive",  whereIn: [true, false]) // শুধু active users
+        .get();
+
+    // map to UserModel & remove current user
+    userEmails.value = snapshot.docs
+        .map((doc) {
+      final data = doc.data();
       return UserModel.fromMap(data);
-    }).where((user) => user.email != currentEmail.value) // 🔥 filter
+    })
+        .where((user) => user.email != currentEmail.value) // current user বাদ
         .toList();
   }
 }
