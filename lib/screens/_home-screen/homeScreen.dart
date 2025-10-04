@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
 import 'package:parrot_messaging/screens/_home-screen/_listView.dart';
-import 'package:parrot_messaging/screens/_onBoarding-screen/_customWidget.dart';
+import 'package:parrot_messaging/globalWidget/_customWidget.dart';
 
 import '../../_gobal-supply/_internetConnection.dart';
 import '../../_gobal-supply/_loggedUser.dart';
@@ -89,8 +89,7 @@ class _HomescreenState extends State<Homescreen> {
                       ),
             ),
             actions: [
-              Obx(() => ImageIconBorder(
-          index: 1,
+              Obx(() => NetworkImages(
           imageName: currentLoggedUserController.photourl.value.isNotEmpty
               ? currentLoggedUserController.photourl.value
               : "assets/images/parrot.png", // ✅ এখানে কাজ করবে
@@ -137,10 +136,6 @@ class _HomescreenState extends State<Homescreen> {
                 ),
                 MessageTiles(
                   currentLoggedUser: currentLoggedUserController,
-                  onTap: () {
-                    Get.toNamed(Routes.chatBoardScreen);
-                    print('Message Tile Cliked');
-                  },
                 ),
               ],
             ),

@@ -19,7 +19,7 @@ class Signupscreen extends StatelessWidget {
     return SafeArea(child: Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        leading: IconButton(onPressed: ()=>Get.back(), icon: Icon(Icons.arrow_back)),
+        leading: IconButton(onPressed: ()=>Get.offAllNamed(Routes.onBoardingScreen), icon: Icon(Icons.arrow_back)),
         centerTitle: true,
           title: Obx(
                 () =>

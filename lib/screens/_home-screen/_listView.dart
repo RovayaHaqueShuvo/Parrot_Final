@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:parrot_messaging/_gobal-supply/_loggedUser.dart';
 
-import '../_onBoarding-screen/_customWidget.dart';
+import '../../Utills/_constant.dart';
+import '../../globalWidget/_customWidget.dart';
 
 class CustomListView extends StatelessWidget {
   final int itemCount;
@@ -26,19 +27,19 @@ class CustomListView extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemCount: currentLoggedUserController.activeUsersData.length,
           itemBuilder: (context, index) {
-            final user = currentLoggedUserController.userEmails[index];
+            final user = currentLoggedUserController.activeUsersData[index];
+            final email = user[EMAIL];
+            final photoUrl = user[PHOTO_URL] ?? 'assets/parrot.png';
             return GestureDetector(
-              key: ValueKey(user.email),
+              key: ValueKey(email),
               onTap: () {
-                debugPrint('Tapped ${user.email}');
+                print('Tapped ${email}');
+                print('Tapped ${photoUrl}');
               },
               child: Column(
                 children: [
-                   ImageIconBorder(
-                    index: 1,
-                    imageName: user.photoUrl.isNotEmpty
-                        ? user.photoUrl
-                        : "assets/images/parrot.png", // যদি empty হয় default image
+                   NetworkImages(
+                    imageName: photoUrl,
                     fromletfSpacing: 12,
                     size: MediaQuery.of(context).size.height*.07,
                     onPressed: () {

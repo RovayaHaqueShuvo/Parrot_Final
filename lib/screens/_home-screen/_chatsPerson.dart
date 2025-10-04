@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:parrot_messaging/models/_userModel.dart';
-import 'package:parrot_messaging/screens/_onBoarding-screen/_customWidget.dart';
+import 'package:parrot_messaging/globalWidget/_customWidget.dart';
 
 import '../../_gobal-supply/_loggedUser.dart';
+import '../../globalWidget/_customeLocalImgesdecoration.dart';
 
 class MessageTile extends StatelessWidget {
   final VoidCallback onTap;
@@ -26,13 +27,9 @@ class MessageTile extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
         child: ListTile(
           onTap: onTap,
-          leading: ImageIconBorder(
-            activeCode: user.isActive?1:0,
-            index: 1,
+          leading: NetworkImages(
             imageName:
-                user.photoUrl.isNotEmpty
-                    ? user.photoUrl
-                    : "assets/images/parrot.png",
+                user.photoUrl,
             onPressed: () {},
           ),
           title:

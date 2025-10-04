@@ -60,20 +60,21 @@ class CurrentLoggedUser extends GetxController {
         .toList();
   }
 
-
   Future<void> fetchAllUsers() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection("USER_DETAILS")
-        .where("isActive",  whereIn: [true, false]) // শুধু active users
-        .get();
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection("USER_DETAILS")
+          .where("isActive", whereIn: [true, false]) // সব user (active/inactive)
+          .get();
 
-    // map to UserModel & remove current user
-    userEmails.value = snapshot.docs
-        .map((doc) {
-      final data = doc.data();
-      return UserModel.fromMap(data);
-    })
-        .where((user) => user.email != currentEmail.value) // current user বাদ
-        .toList();
+      userEmails.value = snapshot.docs
+          .map((doc) => UserModel.fromMap(doc.data()))
+          .where((user) => user.email != currentEmail.value) // Current user বাদ
+          .toList();
+    } catch (e) {
+      print('Error fetching users: $e');
+      Get.snackbar('Error', 'Failed to fetch users: $e',
+          snackPosition: SnackPosition.BOTTOM);
+    }
   }
 }

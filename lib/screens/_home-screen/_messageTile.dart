@@ -3,14 +3,13 @@ import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:parrot_messaging/_gobal-supply/_loggedUser.dart';
 import 'package:parrot_messaging/screens/_home-screen/_chatsPerson.dart';
+import '../../getX/_screenManagement.dart';
 
 class MessageTiles extends StatelessWidget {
   final CurrentLoggedUser currentLoggedUser;
-  final VoidCallback onTap;
 
   const MessageTiles({
     super.key,
-    required this.onTap,
     required this.currentLoggedUser,
   });
 
@@ -28,25 +27,40 @@ class MessageTiles extends StatelessWidget {
         color: Colors.grey[200],
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 08),
+        padding: EdgeInsets.symmetric(vertical: 8),
         child: LiquidPullToRefresh(
-          color: Colors.tealAccent,                // progress color
-          backgroundColor: Colors.lightBlueAccent,     // drop-এর background
-          height: 80,                       // drop height
-          borderWidth: 3.0,                  // drop border
-          animSpeedFactor: 1.5,              // animation smoothness
-          showChildOpacityTransition: true,  // fade-in effect
+          color: Colors.tealAccent,
+          backgroundColor: Colors.lightBlueAccent,
+          height: 80,
+          borderWidth: 3.0,
+          animSpeedFactor: 1.5,
+          showChildOpacityTransition: true,
           springAnimationDurationInMilliseconds: 600,
-          onRefresh: ()=> currentLoggedUser.fetchAllUsers(),
-          child: Obx(
+          onRefresh: () => currentLoggedUser.fetchAllUsers(),
+          child :Obx(
             () => ListView.builder(
-              itemCount: currentLoggedUser.userEmails.length,
-              itemBuilder: (context, index) {
-                final userDetails = currentLoggedUser.userEmails[index];
-                return MessageTile(user: userDetails, onTap: onTap);
-              },
-            ),
-          ),
+      itemCount: currentLoggedUser.userEmails.length,
+        itemBuilder: (context, index) {
+          final user = currentLoggedUser.userEmails[index];
+          print('User: $user, UID Type: ${user.uid.runtimeType}');
+          return MessageTile(
+            user: user,
+            onTap: () {
+              Get.toNamed(
+                Routes.chatBoardScreen,
+                arguments: {
+                  'UID': user.uid is String ? user.uid : (user.uid?['id'] ?? ''),
+                  'NAME': user.name is String ? user.name : 'Unknown',
+                  'EMAIL': user.email is String ? user.email : '',
+                  'PHOTO_URL': user.photoUrl is String ? user.photoUrl : '',
+                },
+              );
+              print('Message Tile Clicked: ${user}');
+            },
+          );
+        },
+      ),
+    ),
         ),
       ),
     );

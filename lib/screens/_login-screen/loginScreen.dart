@@ -5,7 +5,8 @@ import 'package:parrot_messaging/getX/_screenManagement.dart';
 import 'package:parrot_messaging/globalWidget/_customeButton.dart';
 import 'package:parrot_messaging/globalWidget/_customeTextField.dart';
 
-import '../_onBoarding-screen/_customWidget.dart';
+import '../../globalWidget/_customWidget.dart';
+import '../../globalWidget/_customeLocalImgesdecoration.dart';
 import 'loginButtonFunction.dart';
 
 class Loginscreen extends StatelessWidget {
@@ -21,7 +22,7 @@ class Loginscreen extends StatelessWidget {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           leading: IconButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.offAndToNamed(Routes.onBoardingScreen),
             icon: Icon(Icons.arrow_back),
           ),
           centerTitle: true,
@@ -72,7 +73,7 @@ class Loginscreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ImageIconBorder(
+                  LocalImagesDecoration(
                     imageName: "assets/fb.png",
                     onPressed: () {
 
@@ -80,15 +81,14 @@ class Loginscreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                  ImageIconBorder(
-                    index: 0,
+                  LocalImagesDecoration(
                     imageName: "assets/google.png",
                     onPressed: () {
                       controller.signInWithGoogle();
                     },
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                  ImageIconBorder(
+                  LocalImagesDecoration(
                     imageName: "assets/apple.png",
                     onPressed: () {},
                   ),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../_onBoarding-screen/_customWidget.dart' show ImageIconBorder;
+import '../../globalWidget/_customWidget.dart' show NetworkImages;
 
 class ChatBarStyleGlobalUser extends StatelessWidget {
+  final String userPhoto;
   final String massage;
 
-  const ChatBarStyleGlobalUser({super.key, required this.massage});
+  const ChatBarStyleGlobalUser({super.key, required this.massage, required this.userPhoto});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class ChatBarStyleGlobalUser extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
             bottomLeft: Radius.circular(16),
             bottomRight: Radius.circular(16),
           ),
@@ -27,19 +28,25 @@ class ChatBarStyleGlobalUser extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            NetworkImages(imageName: userPhoto, size: 30),
+            const SizedBox(width: 10),
             // Column for text + timestamp
             Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    massage,
-                    style: const TextStyle(fontSize: 18, color: Colors.white70),
-                    softWrap: true,
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      massage,
+                      style: const TextStyle(fontSize: 18, color: Colors.white70),
+                      softWrap: true,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Align(
-                    alignment: Alignment.bottomLeft,
+                    alignment: Alignment.bottomRight,
                     child: Text(
                       "08:02 AM",
                       style: const TextStyle(
@@ -51,8 +58,6 @@ class ChatBarStyleGlobalUser extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 10),
-            ImageIconBorder(imageName: 'assets/parrot.png', size: 30),
             const SizedBox(width: 10),
           ],
         ),
