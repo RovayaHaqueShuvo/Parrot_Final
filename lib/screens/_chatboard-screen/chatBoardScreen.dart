@@ -36,16 +36,21 @@ class Chatboardscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ChatController controller = Get.put(ChatController());
-    final CurrentLoggedUser controllerCurrentLogged = Get.put(CurrentLoggedUser());
-
+    final CurrentLoggedUser controllerCurrentLogged = Get.put(
+      CurrentLoggedUser(),
+    );
 
     //Map থেকে সব value বের করা
-    final _uid = userData['UID'] is String ? userData['UID'].toString() : (userData['UID']?['id'] ?? '').toString();
-    final _name = userData['NAME'] is String ? userData['NAME'].toString() : 'Unknown';
-    final _email = userData['EMAIL'] is String ? userData['EMAIL'].toString() : '';
-    final _photoUrl = userData['PHOTO_URL'] is String ? userData['PHOTO_URL'].toString() : '';
-
-
+    final _uid =
+        userData['UID'] is String
+            ? userData['UID'].toString()
+            : (userData['UID']?['id'] ?? '').toString();
+    final _name =
+        userData['NAME'] is String ? userData['NAME'].toString() : 'Unknown';
+    final _email =
+        userData['EMAIL'] is String ? userData['EMAIL'].toString() : '';
+    final _photoUrl =
+        userData['PHOTO_URL'] is String ? userData['PHOTO_URL'].toString() : '';
 
     return SafeArea(
       child: Scaffold(
@@ -58,15 +63,17 @@ class Chatboardscreen extends StatelessWidget {
             icon: const Icon(Icons.arrow_back, color: Colors.white),
           ),
           title: InkWell(
-            onTap: (){
-              Get.to(() => UserProfileSetting(
-                isCurrentUser: false,
-                golbeUserName: _name,
-                golbeUserUID: _uid,
-                golbeUserEmail: _email,
-                golbeUserPhotoURL: _photoUrl,
-                golbeUserActiveStues: true,
-              ));
+            onTap: () {
+              Get.to(
+                () => UserProfileSetting(
+                  isCurrentUser: false,
+                  golbeUserName: _name,
+                  golbeUserUID: _uid,
+                  golbeUserEmail: _email,
+                  golbeUserPhotoURL: _photoUrl,
+                  golbeUserActiveStues: true,
+                ),
+              );
             },
             child: Row(
               children: [
@@ -75,19 +82,21 @@ class Chatboardscreen extends StatelessWidget {
                 const SizedBox(width: 10),
                 // ✅ Dynamic Name + Presence
                 StreamBuilder<DocumentSnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(_email)
-                      .snapshots(),
+                  stream:
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(_email)
+                          .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
-                      return const Text("Loading...",
-                          style: TextStyle(color: Colors.white));
+                      return const Text(
+                        "Loading...",
+                        style: TextStyle(color: Colors.white),
+                      );
                     }
 
-                    final status =
-                    controller.presenceService.getStatusFromSnapshot(
-                        snapshot.data!);
+                    final status = controller.presenceService
+                        .getStatusFromSnapshot(snapshot.data!);
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,17 +106,19 @@ class Chatboardscreen extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white, ),
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                         Text(
                           status == 'online' ? 'Online' : 'Offline',
                           style: TextStyle(
                             fontSize: 14,
-                            color: status == 'online'
-                                ? Colors.greenAccent
-                                : Colors.grey,
+                            color:
+                                status == 'online'
+                                    ? Colors.greenAccent
+                                    : Colors.grey,
                           ),
                         ),
                       ],
@@ -119,14 +130,18 @@ class Chatboardscreen extends StatelessWidget {
           ),
           actions: [
             IconButton(
-                onPressed: () {
-                  print("User UID: $_uid");
-                  print("User Name: $_name");
-                  print("User Email: $_email");
-                  print("User Photo: $_photoUrl");
-                }, icon: const Icon(Icons.call, color: Colors.white)),
+              onPressed: () {
+                print("User UID: $_uid");
+                print("User Name: $_name");
+                print("User Email: $_email");
+                print("User Photo: $_photoUrl");
+              },
+              icon: const Icon(Icons.call, color: Colors.white),
+            ),
             IconButton(
-                onPressed: () {}, icon: const Icon(Icons.videocam, color: Colors.white)),
+              onPressed: () {},
+              icon: const Icon(Icons.videocam, color: Colors.white),
+            ),
           ],
         ),
         body: Column(
@@ -141,13 +156,42 @@ class Chatboardscreen extends StatelessWidget {
                   }
                   final messages = snapshot.data!.docs;
 
+                  // 🔹 প্রতিটি মেসেজ থেকে sending time বের করা
+                  final sentTimes =
+                      messages.map((msg) {
+                        final data = msg.data() as Map<String, dynamic>;
+                        final timestampData = data['timestamp'];
+
+                        DateTime dateTime;
+
+                        if (timestampData is Timestamp) {
+                          dateTime = timestampData.toDate();
+                        } else if (timestampData is String) {
+                          dateTime = DateTime.parse(timestampData);
+                        } else {
+                          dateTime = DateTime.now();
+                        }
+
+                        // সময় ফরম্যাট করা
+                        final formattedTime =
+                            '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+
+                        return formattedTime;
+                      }).toList();
+
                   // 🔥 Unread Count বের করা
-                  final unreadCount = messages
-                      .where((msg) =>
-                  msg['receiverId'] ==
-                      controller.chatService.currentUserId.value &&
-                      msg['read'] == false)
-                      .length;
+                  final unreadCount =
+                      messages
+                          .where(
+                            (msg) =>
+                                msg['receiverId'] ==
+                                    controller
+                                        .chatService
+                                        .currentUserId
+                                        .value &&
+                                msg['read'] == false,
+                          )
+                          .length;
 
                   return Column(
                     children: [
@@ -170,8 +214,9 @@ class Chatboardscreen extends StatelessWidget {
                           itemCount: messages.length,
                           itemBuilder: (context, index) {
                             final msg =
-                            messages[index].data() as Map<String, dynamic>;
-                            final isMe = msg['senderId'] ==
+                                messages[index].data() as Map<String, dynamic>;
+                            final isMe =
+                                msg['senderId'] ==
                                 controller.chatService.currentUserId.value;
 
                             // ✅ যদি আমি receiver হই, তখন read = true update করে দেবে
@@ -180,17 +225,28 @@ class Chatboardscreen extends StatelessWidget {
                             }
 
                             return Row(
-                              mainAxisAlignment: isMe
-                                  ? MainAxisAlignment.end
-                                  : MainAxisAlignment.start,
+                              mainAxisAlignment:
+                                  isMe
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start,
                               children: [
                                 isMe
-                                    ? ChatBarStyleLogedUser(
-                                    userPhoto: controllerCurrentLogged.photourl.value,
-                                    massage: msg['message'])
+                                    ? InkWell(
+                                      onTap: () {
+                                        print("Sending time is: $sentTimes");
+                                      },
+                                      child: ChatBarStyleLogedUser(
+                                        userPhoto:
+                                            controllerCurrentLogged
+                                                .photourl
+                                                .value,
+                                        massage: msg['message'],
+                                      ),
+                                    )
                                     : ChatBarStyleGlobalUser(
-                                    userPhoto: _photoUrl,
-                                    massage: msg['message']),
+                                      userPhoto: _photoUrl,
+                                      massage: msg['message'],
+                                    ),
                               ],
                             );
                           },
@@ -205,15 +261,19 @@ class Chatboardscreen extends StatelessWidget {
             // ✅ Input Bar
             Padding(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
               child: BottomAppBar(
                 color: const Color(0xFF012B0D),
                 child: Row(
                   children: [
                     IconButton(
-                        icon: const Icon(Icons.attach_file_outlined,
-                            color: Colors.white),
-                        onPressed: () {}),
+                      icon: const Icon(
+                        Icons.attach_file_outlined,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {},
+                    ),
                     Expanded(
                       child: TextField(
                         controller: controller.chatsTextController,
@@ -229,14 +289,16 @@ class Chatboardscreen extends StatelessWidget {
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                         ),
                       ),
                     ),
                     IconButton(
-                        icon: const Icon(Icons.send, color: Colors.blue),
-                        onPressed: () =>
-                            controller.sendMessage(_email)),
+                      icon: const Icon(Icons.send, color: Colors.blue),
+                      onPressed: () => controller.sendMessage(_email),
+                    ),
                   ],
                 ),
               ),

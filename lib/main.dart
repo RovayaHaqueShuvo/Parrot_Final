@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parrot_messaging/getX/_screenManagement.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get_storage/get_storage.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -10,6 +11,10 @@ void main() async {
 
   // Firebase initialize
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // GetStorage initialize
+  await GetStorage.init();
+
   runApp(const MyApp());
 }
 

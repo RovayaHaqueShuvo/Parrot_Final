@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
 import 'package:parrot_messaging/screens/_home-screen/_listView.dart';
 import 'package:parrot_messaging/globalWidget/_customWidget.dart';
@@ -46,7 +47,8 @@ class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false, // ✅ default back prevent করবে
+      canPop: false,
+      // ✅ default back prevent করবে
       onPopInvoked: (didPop) {
         if (didPop) return; // যদি pop হয়ে থাকে তাহলে কিছু করবে না
 
@@ -55,18 +57,20 @@ class _HomescreenState extends State<Homescreen> {
       },
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: Color(0xFF012B0D),
+          backgroundColor: Color(0xFFFFFFFF),
           appBar: AppBar(
-            backgroundColor: Color(0xFF012B0D),
-            leading: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.search_outlined),
-              color: Colors.white,
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.black54),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(1000),
+            backgroundColor: Colors.transparent,
+            leadingWidth: 80,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Parrot",
+                  style: GoogleFonts.orbitron(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -75,37 +79,61 @@ class _HomescreenState extends State<Homescreen> {
             title: Obx(
               () =>
                   networkController.isConnected.value
-                      ? Text(
-                        "H O M E",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
+                      ? Text("")
                       : Text(
                         "❌ No Internet Connection",
                         style: TextStyle(color: Colors.red, fontSize: 16),
                       ),
             ),
             actions: [
-              Obx(() => NetworkImages(
-          imageName: currentLoggedUserController.photourl.value.isNotEmpty
-              ? currentLoggedUserController.photourl.value
-              : "assets/images/parrot.png", // ✅ এখানে কাজ করবে
-          fromletfSpacing: 12,
-          onPressed: () {
-            print(currentLoggedUserController.userEmails());
-          },
-          size: 42, controller: networkController,
-        )),
+              Obx(
+                () => NetworkImages(
+                  imageName:
+                      currentLoggedUserController.photourl.value.isNotEmpty
+                          ? currentLoggedUserController.photourl.value
+                          : "assets/images/parrot.png",
+                  // ✅ এখানে কাজ করবে
+                  fromletfSpacing: 12,
+                  onPressed: () {
+                    print(currentLoggedUserController.userEmails());
+                  },
+                  size: 42,
+                  controller: networkController,
+                ),
+              ),
             ],
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(70),
+
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+
+                child: Container(
+                  height: 45,
+
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Search...",
+                      prefixIcon: Icon(Icons.search),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                CustomListView(currentLoggedUserController: currentLoggedUserController,),
+                CustomListView(
+                  currentLoggedUserController: currentLoggedUserController,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -134,9 +162,7 @@ class _HomescreenState extends State<Homescreen> {
                     ),
                   ],
                 ),
-                MessageTiles(
-                  currentLoggedUser: currentLoggedUserController,
-                ),
+                MessageTiles(currentLoggedUser: currentLoggedUserController),
               ],
             ),
           ),

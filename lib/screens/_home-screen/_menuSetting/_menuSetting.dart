@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:parrot_messaging/_gobal-supply/_logout.dart';
 import 'package:parrot_messaging/globalWidget/_containerApp.dart';
 import 'package:parrot_messaging/globalWidget/_customeButton.dart';
 
+import '../../../Utills/_customeWidget.dart';
 import '../../../_gobal-supply/_internetConnection.dart';
 import '../../../getX/_screenManagement.dart';
 import '../_bottomNavigationController.dart';
@@ -19,122 +21,389 @@ class MenuSetting extends StatelessWidget {
       BottomNavigationController(),
     );
     return WillPopScope(
-      onWillPop: ()async{
+      onWillPop: () async {
         Get.offAllNamed(Routes.homeScreen);
         return Future.value(false);
       },
-      child:  SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: Text(""),
-          title: Obx(
-                () =>
-            networkController.isConnected.value
-                ? Text(
-              "S E T T I N G",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leadingWidth: 120,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Setting",
+                  style: GoogleFonts.orbitron(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            )
-                : Text(
-              "❌ No Internet Connection",
-              style: TextStyle(color: Colors.red, fontSize: 16),
             ),
+
+            title: Obx(
+                  () => networkController.isConnected.value
+                  ? const SizedBox()
+                  : const Text(
+                "❌ No Internet Connection",
+                style: TextStyle(color: Colors.red, fontSize: 16),
+              ),
+            ),
+
+            centerTitle: true,
           ),
-          centerTitle: true,
-        ),
-        body: EditableContainer(
-          height: MediaQuery.of(context).size.height * 0.87,
-          width: MediaQuery.of(context).size.height * 0.44,
-          widget: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  CustomeBotton(
-                    barColor: Colors.grey,
-                    text: "PROFILE SETTING",
-                    fontSize: 18,
-                    fontColor: Colors.black,
-                    barRadiusColor: Colors.white,
-                    OnPressed: () => Get.toNamed(Routes.userProfileSetting),
+                  /// PROFILE SECTION
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 20,
+                    ),
+
+                    child: Column(
+                      children: [
+                        /// PROFILE IMAGE
+                        Stack(
+                          children: [
+                            CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.white,
+                              child: CircleAvatar(
+                                radius: 45,
+                                backgroundColor: Colors.grey.shade300,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 50,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ),
+
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.deepPurple,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.edit,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 15),
+
+                        /// NAME
+                        Text(
+                          "Alex Morgan",
+                          style: GoogleFonts.poppins(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+
+                        const SizedBox(height: 5),
+
+                        /// EMAIL
+                        Text(
+                          "alex.morgan@example.com",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        /// EDIT BUTTON
+                        ElevatedButton(
+                          onPressed: () {},
+
+                          style: ElevatedButton.styleFrom(
+                            elevation: 1,
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 30,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+
+                          child: Text(
+                            "Edit Profile",
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.018),
-                  CustomeBotton(
-                    barColor: Colors.white,
-                    text: "THEME MODE",
-                    fontSize: 18,
-                    fontColor: Colors.black,
-                    barRadiusColor: Colors.black,
-                    OnPressed: () {},
+
+                  const SizedBox(height: 10),
+
+                  /// ONLINE STATUS CARD
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+
+                      decoration: BoxDecoration(
+                        color: const Color(0xffEEF2F5),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Online Status",
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+
+                              const SizedBox(height: 4),
+
+                              Text(
+                                "Show when you're active",
+                                style: GoogleFonts.poppins(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+
+                          Switch(
+                            value: true,
+                            onChanged: (value) {},
+                            activeColor: Colors.green,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.018),
-                  CustomeBotton(
-                    barColor: Colors.grey,
-                    text: "SHARED MEDIA",
-                    fontSize: 18,
-                    fontColor: Colors.black,
-                    barRadiusColor: Colors.white,
-                    OnPressed: () => Get.toNamed(Routes.userProfileSetting),
+
+                  const SizedBox(height: 25),
+
+                  /// ACCOUNT TITLE
+                  sectionTitle("ACCOUNT"),
+
+                  settingsTile(
+                    icon: Icons.person_outline,
+                    iconColor: Colors.blue,
+                    title: "Profile Information",
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.018),
-                  CustomeBotton(
-                    barColor: Colors.grey,
-                    text: "FRIEND LIST",
-                    fontSize: 18,
-                    fontColor: Colors.black,
-                    barRadiusColor: Colors.white,
-                    OnPressed: () => Get.toNamed(Routes.userProfileSetting),
+
+                  settingsTile(
+                    icon: Icons.shield_outlined,
+                    iconColor: Colors.green,
+                    title: "Privacy & Security",
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.018),
-                  CustomeBotton(
-                    barColor: Colors.grey,
-                    text: "NOTIFICATION SETTING",
-                    fontSize: 18,
-                    fontColor: Colors.black,
-                    barRadiusColor: Colors.white,
-                    OnPressed: () => Get.toNamed(Routes.userProfileSetting),
+
+                  const SizedBox(height: 20),
+
+                  /// NOTIFICATION TITLE
+                  sectionTitle("NOTIFICATIONS"),
+
+                  settingsTile(
+                    icon: Icons.notifications_none,
+                    iconColor: Colors.orange,
+                    title: "Push Notifications",
+                    trailingSwitch: true,
                   ),
+
+                  settingsTile(
+                    icon: Icons.volume_up_outlined,
+                    iconColor: Colors.pink,
+                    title: "Sound & Vibration",
+                  ),
+
+                  /// EXTRA EVENTS / OPTIONS
+                  const SizedBox(height: 20),
+
+                  sectionTitle("MORE SETTINGS"),
+
+                  settingsTile(
+                    icon: Icons.language,
+                    iconColor: Colors.indigo,
+                    title: "Language",
+                  ),
+
+                  //Dark Mode
+                  settingsTile(
+                    icon: Icons.dark_mode_outlined,
+                    iconColor: Colors.black,
+                    title: "Dark Mode",
+                    trailingSwitch: true
+                  ),
+
+                  settingsTile(
+                    icon: Icons.lock_outline,
+                    iconColor: Colors.red,
+                    title: "Change Password",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.storage_outlined,
+                    iconColor: Colors.teal,
+                    title: "Storage & Cache",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.help_outline,
+                    iconColor: Colors.deepPurple,
+                    title: "Help Center",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.info_outline,
+                    iconColor: Colors.cyan,
+                    title: "About App",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.logout,
+                    iconColor: Colors.red,
+                    title: "Logout",
+                  ),
+                  sectionTitle("ACCOUNT"),
+
+                  settingsTile(
+                    icon: Icons.person_outline,
+                    iconColor: Colors.blue,
+                    title: "Profile Information",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.shield_outlined,
+                    iconColor: Colors.green,
+                    title: "Privacy & Security",
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// NOTIFICATION TITLE
+                  sectionTitle("NOTIFICATIONS"),
+
+                  settingsTile(
+                    icon: Icons.notifications_none,
+                    iconColor: Colors.orange,
+                    title: "Push Notifications",
+                    trailingSwitch: true,
+                  ),
+
+                  settingsTile(
+                    icon: Icons.volume_up_outlined,
+                    iconColor: Colors.pink,
+                    title: "Sound & Vibration",
+                  ),
+
+                  /// EXTRA EVENTS / OPTIONS
+                  const SizedBox(height: 20),
+
+                  sectionTitle("MORE SETTINGS"),
+
+                  settingsTile(
+                    icon: Icons.language,
+                    iconColor: Colors.indigo,
+                    title: "Language",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.dark_mode_outlined,
+                    iconColor: Colors.black,
+                    title: "Dark Mode",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.lock_outline,
+                    iconColor: Colors.red,
+                    title: "Change Password",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.storage_outlined,
+                    iconColor: Colors.teal,
+                    title: "Storage & Cache",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.help_outline,
+                    iconColor: Colors.deepPurple,
+                    title: "Help Center",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.info_outline,
+                    iconColor: Colors.cyan,
+                    title: "About App",
+                  ),
+
+                  settingsTile(
+                    icon: Icons.logout,
+                    iconColor: Colors.red,
+                    title: "Logout",
+                  ),
+
+                  const SizedBox(height: 100),
                 ],
               ),
-              CustomeBotton(
-                barColor: Colors.grey,
-                text: "LOG OUT",
-                fontSize: 18,
-                fontColor: Colors.black,
-                barRadiusColor: Colors.white,
-                OnPressed: () => logoutController.logout(),
-              ),
-            ],
+            ),
           ),
-        ),
-        bottomNavigationBar: Obx(
-              () => BottomNavigationBar(
-            currentIndex: bottomNavigationController.selectedIndex.value,
-            onTap: bottomNavigationController.onItemTapped,
-            unselectedItemColor: Colors.grey,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.mark_chat_unread, color: Colors.grey),
-                label: 'Chats',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.notifications_active_sharp,
-                  color: Colors.grey,
+          bottomNavigationBar: Obx(
+            () => BottomNavigationBar(
+              currentIndex: bottomNavigationController.selectedIndex.value,
+              onTap: bottomNavigationController.onItemTapped,
+              unselectedItemColor: Colors.grey,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.mark_chat_unread, color: Colors.grey),
+                  label: 'Chats',
                 ),
-                label: 'Notification',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.menu, color: Colors.green),
-                label: 'Menu',
-              ),
-            ],
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.notifications_active_sharp,
+                    color: Colors.grey,
+                  ),
+                  label: 'Notification',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.menu, color: Colors.green),
+                  label: 'Menu',
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ), );
+    );
   }
 }
