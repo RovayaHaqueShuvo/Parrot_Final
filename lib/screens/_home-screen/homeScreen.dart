@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:parrot_messaging/getX/theme-mode/theme_mode_getX.dart';
 import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
 import 'package:parrot_messaging/screens/_home-screen/_listView.dart';
 import 'package:parrot_messaging/globalWidget/_customWidget.dart';
@@ -23,9 +24,6 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   @override
   void initState() {
-    final CurrentLoggedUser currentLoggedUserController = Get.put(
-      CurrentLoggedUser(),
-    );
     currentLoggedUserController.fetchActiveOthersUsers();
     final NetworkController networkController = Get.put(NetworkController());
     currentLoggedUserController.getCurrentUserDetailsLoggedGoogle();
@@ -36,6 +34,7 @@ class _HomescreenState extends State<Homescreen> {
   }
 
   final NetworkController networkController = Get.put(NetworkController());
+  final ThemeController thememodeController = Get.put(ThemeController());
   final BottomNavigationController bottomNavigationController = Get.put(
     BottomNavigationController(),
   );
@@ -57,7 +56,7 @@ class _HomescreenState extends State<Homescreen> {
       },
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: Color(0xFFFFFFFF),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             leadingWidth: 80,
@@ -68,7 +67,10 @@ class _HomescreenState extends State<Homescreen> {
                 child: Text(
                   "Parrot",
                   style: GoogleFonts.orbitron(
-                    color: Colors.black,
+                    color:
+                        thememodeController.isDarkMode.value
+                            ? Colors.white
+                            : Colors.black,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -127,45 +129,46 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                CustomListView(
-                  currentLoggedUserController: currentLoggedUserController,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        "All",
-                        style: TextStyle(color: Colors.grey, fontSize: 20),
+          body: Obx(() {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "All",
+                          style: TextStyle(color: Colors.grey, fontSize: 20),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        "Unread",
-                        style: TextStyle(color: Colors.grey, fontSize: 20),
+                      SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "Unread",
+                          style: TextStyle(color: Colors.grey, fontSize: 20),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        "Groups",
-                        style: TextStyle(color: Colors.grey, fontSize: 20),
+                      SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "Groups",
+                          style: TextStyle(color: Colors.grey, fontSize: 20),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                MessageTiles(currentLoggedUser: currentLoggedUserController),
-              ],
-            ),
-          ),
+                    ],
+                  ),
+                  MessageTiles(
+                    currentLoggedUser: currentLoggedUserController,
+                    isDark: thememodeController.isDarkMode.value,
+                  ),
+                ],
+              ),
+            );
+          }),
           bottomNavigationBar: Obx(
             () => BottomNavigationBar(
               currentIndex: bottomNavigationController.selectedIndex.value,

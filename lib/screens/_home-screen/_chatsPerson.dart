@@ -8,11 +8,13 @@ import '../../globalWidget/_customeLocalImgesdecoration.dart';
 class MessageTile extends StatelessWidget {
   final VoidCallback onTap;
   final UserModel user;
+  final bool isDark;
 
   const MessageTile({
     super.key,
     required this.onTap,
     required this.user,
+    required this.isDark,
   });
 
   @override
@@ -20,18 +22,14 @@ class MessageTile extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 02),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Colors.grey : Colors.white,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
         child: ListTile(
           onTap: onTap,
-          leading: NetworkImages(
-            imageName:
-                user.photoUrl,
-            onPressed: () {},
-          ),
+          leading: NetworkImages(imageName: user.photoUrl, onPressed: () {}),
           title:
               user.name.isNotEmpty
                   ? Text(

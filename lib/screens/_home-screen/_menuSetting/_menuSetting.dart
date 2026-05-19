@@ -8,6 +8,7 @@ import 'package:parrot_messaging/globalWidget/_customeButton.dart';
 import '../../../Utills/_customeWidget.dart';
 import '../../../_gobal-supply/_internetConnection.dart';
 import '../../../getX/_screenManagement.dart';
+import '../../../getX/theme-mode/theme_mode_getX.dart';
 import '../_bottomNavigationController.dart';
 
 class MenuSetting extends StatelessWidget {
@@ -17,6 +18,7 @@ class MenuSetting extends StatelessWidget {
   Widget build(BuildContext context) {
     final NetworkController networkController = Get.put(NetworkController());
     final AuthController logoutController = Get.put(AuthController());
+    final ThemeController themeModeController = Get.put(ThemeController());
     final BottomNavigationController bottomNavigationController = Get.put(
       BottomNavigationController(),
     );
@@ -38,7 +40,7 @@ class MenuSetting extends StatelessWidget {
                 child: Text(
                   "Setting",
                   style: GoogleFonts.orbitron(
-                    color: Colors.black,
+                    color:themeModeController.isDarkMode.value? Colors.white : Colors.black,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -47,12 +49,13 @@ class MenuSetting extends StatelessWidget {
             ),
 
             title: Obx(
-                  () => networkController.isConnected.value
-                  ? const SizedBox()
-                  : const Text(
-                "❌ No Internet Connection",
-                style: TextStyle(color: Colors.red, fontSize: 16),
-              ),
+              () =>
+                  networkController.isConnected.value
+                      ? const SizedBox()
+                      : const Text(
+                        "❌ No Internet Connection",
+                        style: TextStyle(color: Colors.red, fontSize: 16),
+                      ),
             ),
 
             centerTitle: true,
@@ -119,7 +122,7 @@ class MenuSetting extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: themeModeController.isDarkMode.value? Colors.white :Colors.black87,
                           ),
                         ),
 
@@ -130,7 +133,7 @@ class MenuSetting extends StatelessWidget {
                           "alex.morgan@example.com",
                           style: GoogleFonts.poppins(
                             fontSize: 14,
-                            color: Colors.grey,
+                            color: themeModeController.isDarkMode.value? Colors.white :Colors.black87,
                           ),
                         ),
 
@@ -142,7 +145,7 @@ class MenuSetting extends StatelessWidget {
 
                           style: ElevatedButton.styleFrom(
                             elevation: 1,
-                            backgroundColor: Colors.white,
+                            backgroundColor: themeModeController.isDarkMode.value? Colors.white :Colors.transparent,
                             foregroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 30,
@@ -174,8 +177,9 @@ class MenuSetting extends StatelessWidget {
                       padding: const EdgeInsets.all(16),
 
                       decoration: BoxDecoration(
-                        color: const Color(0xffEEF2F5),
+                        color: themeModeController.isDarkMode.value? Colors.transparent : Color(0xffEEF2F5),
                         borderRadius: BorderRadius.circular(18),
+
                       ),
 
                       child: Row(
@@ -220,12 +224,15 @@ class MenuSetting extends StatelessWidget {
                     icon: Icons.person_outline,
                     iconColor: Colors.blue,
                     title: "Profile Information",
+                    ontap: () {}, context: context,
                   ),
 
                   settingsTile(
+                    context: context,
                     icon: Icons.shield_outlined,
                     iconColor: Colors.green,
                     title: "Privacy & Security",
+                    ontap: () {},
                   ),
 
                   const SizedBox(height: 20),
@@ -234,16 +241,20 @@ class MenuSetting extends StatelessWidget {
                   sectionTitle("NOTIFICATIONS"),
 
                   settingsTile(
+                    context: context,
                     icon: Icons.notifications_none,
                     iconColor: Colors.orange,
                     title: "Push Notifications",
                     trailingSwitch: true,
+                    ontap: () {},
                   ),
 
                   settingsTile(
+                    context: context,
                     icon: Icons.volume_up_outlined,
                     iconColor: Colors.pink,
                     title: "Sound & Vibration",
+                    ontap: () {},
                   ),
 
                   /// EXTRA EVENTS / OPTIONS
@@ -252,128 +263,72 @@ class MenuSetting extends StatelessWidget {
                   sectionTitle("MORE SETTINGS"),
 
                   settingsTile(
+                    context: context,
                     icon: Icons.language,
                     iconColor: Colors.indigo,
                     title: "Language",
+                    ontap: () {},
                   ),
 
                   //Dark Mode
-                  settingsTile(
-                    icon: Icons.dark_mode_outlined,
-                    iconColor: Colors.black,
-                    title: "Dark Mode",
-                    trailingSwitch: true
-                  ),
+                  Obx(() => ListTile(
+                    leading: Icon(
+                      themeModeController.isDarkMode.value
+                          ? Icons.dark_mode
+                          : Icons.light_mode,
+                      color: Colors.teal,
+                    ),
+                    title: const Text("Dark Mode"),
+                    subtitle: Text(
+                      themeModeController.isDarkMode.value ? "on" : "off",
+                    ),
+                    trailing: Switch(
+                      value: themeModeController.isDarkMode.value,
+                      onChanged: (value) => themeModeController.toggleTheme(),
+                      activeColor: Colors.teal,
+                    ),
+                    onTap: () => themeModeController.toggleTheme(),
+                  )),
 
                   settingsTile(
+                    context: context,
                     icon: Icons.lock_outline,
                     iconColor: Colors.red,
                     title: "Change Password",
+                    ontap: () {},
                   ),
 
                   settingsTile(
+                    context: context,
                     icon: Icons.storage_outlined,
                     iconColor: Colors.teal,
                     title: "Storage & Cache",
+                    ontap: () {},
                   ),
 
                   settingsTile(
+                    context: context,
                     icon: Icons.help_outline,
                     iconColor: Colors.deepPurple,
                     title: "Help Center",
+                    ontap: () {},
                   ),
 
                   settingsTile(
+                    context: context,
                     icon: Icons.info_outline,
                     iconColor: Colors.cyan,
                     title: "About App",
+                    ontap: () {},
                   ),
 
                   settingsTile(
+                    context: context,
                     icon: Icons.logout,
                     iconColor: Colors.red,
                     title: "Logout",
+                    ontap: () {},
                   ),
-                  sectionTitle("ACCOUNT"),
-
-                  settingsTile(
-                    icon: Icons.person_outline,
-                    iconColor: Colors.blue,
-                    title: "Profile Information",
-                  ),
-
-                  settingsTile(
-                    icon: Icons.shield_outlined,
-                    iconColor: Colors.green,
-                    title: "Privacy & Security",
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  /// NOTIFICATION TITLE
-                  sectionTitle("NOTIFICATIONS"),
-
-                  settingsTile(
-                    icon: Icons.notifications_none,
-                    iconColor: Colors.orange,
-                    title: "Push Notifications",
-                    trailingSwitch: true,
-                  ),
-
-                  settingsTile(
-                    icon: Icons.volume_up_outlined,
-                    iconColor: Colors.pink,
-                    title: "Sound & Vibration",
-                  ),
-
-                  /// EXTRA EVENTS / OPTIONS
-                  const SizedBox(height: 20),
-
-                  sectionTitle("MORE SETTINGS"),
-
-                  settingsTile(
-                    icon: Icons.language,
-                    iconColor: Colors.indigo,
-                    title: "Language",
-                  ),
-
-                  settingsTile(
-                    icon: Icons.dark_mode_outlined,
-                    iconColor: Colors.black,
-                    title: "Dark Mode",
-                  ),
-
-                  settingsTile(
-                    icon: Icons.lock_outline,
-                    iconColor: Colors.red,
-                    title: "Change Password",
-                  ),
-
-                  settingsTile(
-                    icon: Icons.storage_outlined,
-                    iconColor: Colors.teal,
-                    title: "Storage & Cache",
-                  ),
-
-                  settingsTile(
-                    icon: Icons.help_outline,
-                    iconColor: Colors.deepPurple,
-                    title: "Help Center",
-                  ),
-
-                  settingsTile(
-                    icon: Icons.info_outline,
-                    iconColor: Colors.cyan,
-                    title: "About App",
-                  ),
-
-                  settingsTile(
-                    icon: Icons.logout,
-                    iconColor: Colors.red,
-                    title: "Logout",
-                  ),
-
-                  const SizedBox(height: 100),
                 ],
               ),
             ),

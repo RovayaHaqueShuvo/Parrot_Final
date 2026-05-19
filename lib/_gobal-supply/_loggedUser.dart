@@ -17,10 +17,10 @@ class CurrentLoggedUser extends GetxController {
 
   Future<void> getCurrentUserDetailsLoggedGoogle() async {
     DocumentSnapshot doc =
-    await FirebaseFirestore.instance
-        .collection(USER_DETAILS) // collection name
-        .doc(_user!.email) // document id
-        .get();
+        await FirebaseFirestore.instance
+            .collection(USER_DETAILS) // collection name
+            .doc(_user!.email) // document id
+            .get();
 
     if (doc.exists) {
       var data = doc.data() as Map<String, dynamic>;
@@ -49,32 +49,52 @@ class CurrentLoggedUser extends GetxController {
   //       .toList();
   // }
   Future<void> fetchActiveOthersUsers() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection(USER_DETAILS)
-        .where("isActive", isEqualTo: true)
-        .get();
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection(USER_DETAILS)
+            .where("isActive", isEqualTo: true)
+            .get();
 
     // প্রতিটা document এর data map আকারে activeUsersData variable-এ set করা
-    activeUsersData.value = snapshot.docs
-        .map((doc) => doc.data())
-        .toList();
+    activeUsersData.value = snapshot.docs.map((doc) => doc.data()).toList();
   }
 
   Future<void> fetchAllUsers() async {
     try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection("USER_DETAILS")
-          .where("isActive", whereIn: [true, false]) // সব user (active/inactive)
-          .get();
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection("USER_DETAILS")
+              .where(
+                "isActive",
+                whereIn: [true, false],
+              ) // সব user (active/inactive)
+              .get();
 
-      userEmails.value = snapshot.docs
-          .map((doc) => UserModel.fromMap(doc.data()))
-          .where((user) => user.email != currentEmail.value) // Current user বাদ
-          .toList();
+      userEmails.value =
+          snapshot.docs
+              .map((doc) => UserModel.fromMap(doc.data()))
+              .where(
+                (user) => user.email != currentEmail.value,
+              ) // Current user বাদ
+              .toList();
     } catch (e) {
       print('Error fetching users: $e');
-      Get.snackbar('Error', 'Failed to fetch users: $e',
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'Error',
+        'Failed to fetch users: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    Future.delayed(Duration.zero, () async {
+      await getCurrentUserDetailsLoggedGoogle();
+      await fetchActiveOthersUsers();
+      await fetchAllUsers();
+    });
   }
 }

@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 
 /// SECTION TITLE
@@ -24,9 +27,12 @@ Widget settingsTile({
   required Color iconColor,
   required String title,
   bool trailingSwitch = false,
+  required Callback ontap,
+  required BuildContext context,
+
 }) {
   return Container(
-    color: Colors.white,
+    color:Theme.of(context).scaffoldBackgroundColor,
 
     child: ListTile(
       leading: Icon(icon, color: iconColor),
@@ -37,17 +43,17 @@ Widget settingsTile({
       ),
 
       trailing:
-          trailingSwitch
-              ? Switch(
-                value: false,
-                onChanged: (value) {},
-                activeColor: Colors.green,
-              )
-              : const Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: Colors.grey,
-              ),
+      trailingSwitch
+          ? Switch(
+        value: false,
+        onChanged: (value)=> ontap,
+        activeColor: Colors.green,
+      )
+          : const Icon(
+        Icons.arrow_forward_ios,
+        size: 16,
+        color: Colors.grey,
+      ),
     ),
   );
 }

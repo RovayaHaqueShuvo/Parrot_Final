@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   intl: 
   get:
-  get_storage:
+  get_storage: ^2.1.1
   firebase_core:
   firebase_auth:
   sign_in_with_apple:
