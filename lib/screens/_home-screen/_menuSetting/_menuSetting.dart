@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:parrot_messaging/Utills/_constant.dart';
 import 'package:parrot_messaging/_gobal-supply/_logout.dart';
-import 'package:parrot_messaging/globalWidget/_containerApp.dart';
-import 'package:parrot_messaging/globalWidget/_customeButton.dart';
 
 import '../../../Utills/_customeWidget.dart';
 import '../../../_gobal-supply/_internetConnection.dart';
 import '../../../getX/_screenManagement.dart';
+import '../../../getX/acitve-hide/_acitve&hideStatus.dart';
 import '../../../getX/theme-mode/theme_mode_getX.dart';
 import '../_bottomNavigationController.dart';
 
@@ -16,6 +16,9 @@ class MenuSetting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size distance = MediaQuery.of(context).size;
+    final ActiveUser activeStatusController = Get.put(ActiveUser());
+    final HideMe hideMeStatusController = Get.put(HideMe());
     final NetworkController networkController = Get.put(NetworkController());
     final AuthController logoutController = Get.put(AuthController());
     final ThemeController themeModeController = Get.put(ThemeController());
@@ -40,7 +43,10 @@ class MenuSetting extends StatelessWidget {
                 child: Text(
                   "Setting",
                   style: GoogleFonts.orbitron(
-                    color:themeModeController.isDarkMode.value? Colors.white : Colors.black,
+                    color:
+                        themeModeController.isDarkMode.value
+                            ? Colors.white
+                            : Colors.black,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -122,7 +128,10 @@ class MenuSetting extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: themeModeController.isDarkMode.value? Colors.white :Colors.black87,
+                            color:
+                                themeModeController.isDarkMode.value
+                                    ? Colors.white
+                                    : Colors.black87,
                           ),
                         ),
 
@@ -133,7 +142,10 @@ class MenuSetting extends StatelessWidget {
                           "alex.morgan@example.com",
                           style: GoogleFonts.poppins(
                             fontSize: 14,
-                            color: themeModeController.isDarkMode.value? Colors.white :Colors.black87,
+                            color:
+                                themeModeController.isDarkMode.value
+                                    ? Colors.white
+                                    : Colors.black87,
                           ),
                         ),
 
@@ -145,7 +157,10 @@ class MenuSetting extends StatelessWidget {
 
                           style: ElevatedButton.styleFrom(
                             elevation: 1,
-                            backgroundColor: themeModeController.isDarkMode.value? Colors.white :Colors.transparent,
+                            backgroundColor:
+                                themeModeController.isDarkMode.value
+                                    ? Colors.white
+                                    : Colors.transparent,
                             foregroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 30,
@@ -177,38 +192,256 @@ class MenuSetting extends StatelessWidget {
                       padding: const EdgeInsets.all(16),
 
                       decoration: BoxDecoration(
-                        color: themeModeController.isDarkMode.value? Colors.transparent : Color(0xffEEF2F5),
+                        color:
+                        themeModeController.isDarkMode.value
+                            ? Colors.transparent
+                            : Color(0xffEEF2F5),
                         borderRadius: BorderRadius.circular(18),
-
                       ),
 
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Online Status",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                          InkWell(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return SizedBox(
+                                    height: 300,
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                                        children: [
+                                          Text(
+                                            "Online Status",
+                                            style: GoogleFonts.orbitron(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: distance.height*.01),
+                                          Text("Who can able to see your active status"),
+                                          Obx(() {
+                                            return Column(
+                                              children: [
+                                                RadioListTile<ActiveStatus>(
+                                                  title: const Text("Everyone"),
+                                                  value: ActiveStatus.everyone,
+                                                  groupValue:
+                                                  activeStatusController
+                                                      .selectedOption
+                                                      .value,
+                                                  onChanged: (value) {
+                                                    if (value != null) {
+                                                      activeStatusController
+                                                          .selectedOption
+                                                          .value = value;
+                                                    }
+                                                  },
+                                                  activeColor: Colors.teal,
+                                                ),
+
+                                                RadioListTile<ActiveStatus>(
+                                                  title: const Text(
+                                                    "Only Friends",
+                                                  ),
+                                                  value: ActiveStatus.onlyFriend,
+                                                  groupValue:
+                                                  activeStatusController
+                                                      .selectedOption
+                                                      .value,
+                                                  onChanged: (value) {
+                                                    if (value != null) {
+                                                      activeStatusController
+                                                          .selectedOption
+                                                          .value = value;
+                                                    }
+                                                  },
+                                                  activeColor: Colors.teal,
+                                                ),
+
+                                                RadioListTile<ActiveStatus>(
+                                                  title: const Text("Nobody"),
+                                                  value: ActiveStatus.nobody,
+                                                  groupValue:
+                                                  activeStatusController
+                                                      .selectedOption
+                                                      .value,
+                                                  onChanged: (value) {
+                                                    if (value != null) {
+                                                      activeStatusController
+                                                          .selectedOption
+                                                          .value = value;
+                                                    }
+                                                  },
+                                                  activeColor: Colors.teal,
+                                                ),
+                                              ],
+                                            );
+                                          }),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Online Status",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                 ),
-                              ),
 
-                              const SizedBox(height: 4),
+                                const SizedBox(height: 4),
 
-                              Text(
-                                "Show when you're active",
-                                style: GoogleFonts.poppins(color: Colors.grey),
-                              ),
-                            ],
+                                Text(
+                                  "Show when you're active",
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
 
-                          Switch(
-                            value: true,
-                            onChanged: (value) {},
-                            activeColor: Colors.green,
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+
+                      decoration: BoxDecoration(
+                        color:
+                        themeModeController.isDarkMode.value
+                            ? Colors.transparent
+                            : Color(0xffEEF2F5),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return SizedBox(
+                                    height: 300,
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                                        children: [
+                                          Text(
+                                            "Online Status",
+                                            style: GoogleFonts.orbitron(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: distance.height*.01),
+                                          Text("Who can able to see  your profile"),
+                                          Obx(() {
+                                            return Column(
+                                              children: [
+                                                RadioListTile<HideUser>(
+                                                  title: const Text("Everyone"),
+                                                  value: HideUser.everyone,
+                                                  groupValue:
+                                                  hideMeStatusController
+                                                      .selectedOption
+                                                      .value,
+                                                  onChanged: (value) {
+                                                    if (value != null) {
+                                                      hideMeStatusController
+                                                          .selectedOption
+                                                          .value = value;
+                                                    }
+                                                  },
+                                                  activeColor: Colors.teal,
+                                                ),
+
+                                                RadioListTile<HideUser>(
+                                                  title: const Text(
+                                                    "Only Friends",
+                                                  ),
+                                                  value: HideUser.anonymousUser,
+                                                  groupValue:
+                                                  hideMeStatusController
+                                                      .selectedOption
+                                                      .value,
+                                                  onChanged: (value) {
+                                                    if (value != null) {
+                                                      hideMeStatusController
+                                                          .selectedOption
+                                                          .value = value;
+                                                    }
+                                                  },
+                                                  activeColor: Colors.teal,
+                                                ),
+
+                                                RadioListTile<HideUser>(
+                                                  title: const Text("Nobody"),
+                                                  value: HideUser.nobody,
+                                                  groupValue:
+                                                  hideMeStatusController
+                                                      .selectedOption
+                                                      .value,
+                                                  onChanged: (value) {
+                                                    if (value != null) {
+                                                      hideMeStatusController
+                                                          .selectedOption
+                                                          .value = value;
+                                                    }
+                                                  },
+                                                  activeColor: Colors.teal,
+                                                ),
+                                              ],
+                                            );
+                                          }),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Hide Me",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 4),
+
+                                Text(
+                                  "Show when hide from parrot",
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -224,7 +457,8 @@ class MenuSetting extends StatelessWidget {
                     icon: Icons.person_outline,
                     iconColor: Colors.blue,
                     title: "Profile Information",
-                    ontap: () {}, context: context,
+                    ontap: () {},
+                    context: context,
                   ),
 
                   settingsTile(
@@ -271,24 +505,26 @@ class MenuSetting extends StatelessWidget {
                   ),
 
                   //Dark Mode
-                  Obx(() => ListTile(
-                    leading: Icon(
-                      themeModeController.isDarkMode.value
-                          ? Icons.dark_mode
-                          : Icons.light_mode,
-                      color: Colors.teal,
+                  Obx(
+                    () => ListTile(
+                      leading: Icon(
+                        themeModeController.isDarkMode.value
+                            ? Icons.dark_mode
+                            : Icons.light_mode,
+                        color: Colors.teal,
+                      ),
+                      title: const Text("Dark Mode"),
+                      subtitle: Text(
+                        themeModeController.isDarkMode.value ? "on" : "off",
+                      ),
+                      trailing: Switch(
+                        value: themeModeController.isDarkMode.value,
+                        onChanged: (value) => themeModeController.toggleTheme(),
+                        activeColor: Colors.teal,
+                      ),
+                      onTap: () => themeModeController.toggleTheme(),
                     ),
-                    title: const Text("Dark Mode"),
-                    subtitle: Text(
-                      themeModeController.isDarkMode.value ? "on" : "off",
-                    ),
-                    trailing: Switch(
-                      value: themeModeController.isDarkMode.value,
-                      onChanged: (value) => themeModeController.toggleTheme(),
-                      activeColor: Colors.teal,
-                    ),
-                    onTap: () => themeModeController.toggleTheme(),
-                  )),
+                  ),
 
                   settingsTile(
                     context: context,

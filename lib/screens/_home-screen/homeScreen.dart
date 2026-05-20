@@ -109,20 +109,56 @@ class _HomescreenState extends State<Homescreen> {
 
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
-
                 child: Container(
                   height: 45,
-
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
+                    color: Theme.of(context).hoverColor, // ভালো প্র্যাকটিস
                     borderRadius: BorderRadius.circular(30),
-                  ),
 
+                    // Border অনুযায়ী ডার্ক/লাইট মোড
+                    border: Border.all(
+                      color:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors
+                                  .white24 // Dark mode-এ হালকা সাদা আউটলাইন
+                              : Colors
+                                  .grey
+                                  .shade400, // Light mode-এ ধূসর বর্ডার
+                      width: 1.2,
+                    ),
+
+                    boxShadow:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? null
+                            : [
+                              BoxShadow(
+                                color: Colors.grey.shade200,
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                  ),
                   child: TextField(
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                     decoration: InputDecoration(
                       hintText: "Search...",
-                      prefixIcon: Icon(Icons.search),
+                      hintStyle: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white54
+                                : Colors.grey.shade600,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white70
+                                : Colors.grey.shade700,
+                      ),
                       border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                 ),

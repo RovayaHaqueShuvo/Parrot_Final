@@ -7,3 +7,14 @@ const String TIME = 'TIME';
 const String ACTIVESTATUS = 'ACTIVESTATUS';
 const String CHATS = 'CHATS';
 const String MESSAGES = 'MESSAGES';
+
+enum ActiveStatus {
+  everyone,
+  onlyFriend,
+  nobody,
+}
+enum HideUser {
+  everyone,
+  anonymousUser,
+  nobody,
+}
