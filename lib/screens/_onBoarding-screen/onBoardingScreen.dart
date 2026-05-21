@@ -4,15 +4,12 @@ import 'package:parrot_messaging/getX/_screenManagement.dart';
 
 import '../../globalWidget/_customeButton.dart';
 import '../../globalWidget/_customeLocalImgesdecoration.dart';
-import '../_login-screen/loginButtonFunction.dart';
-import '../../globalWidget/_customWidget.dart';
 
 class Onboardingscreen extends StatelessWidget {
   const Onboardingscreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(LoginButtonfunctionManagement());
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -60,7 +57,7 @@ class Onboardingscreen extends StatelessWidget {
                   children: [
                     LocalImagesDecoration(imageName: "assets/fb.png", onPressed: () {}),
                     SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                    LocalImagesDecoration(imageName: "assets/google.png", onPressed: () {controller.signInWithGoogle();}),
+                    LocalImagesDecoration(imageName: "assets/google.png", onPressed: () {}),
                     SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                     LocalImagesDecoration(imageName: "assets/apple.png", onPressed: () {}),
                   ],
@@ -88,33 +85,7 @@ class Onboardingscreen extends StatelessWidget {
                   },
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * .05),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an account?",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // Navigate to the sign up screen
-                        Get.toNamed(Routes.registerScreen);
-                      },
-                      child: Text(
-                        "Sign Up",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+
               ],
             ),
           ),

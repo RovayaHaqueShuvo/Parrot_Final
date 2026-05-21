@@ -1,17 +1,12 @@
 import 'dart:io';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parrot_messaging/getX/theme-mode/theme_mode_getX.dart';
 import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
-import 'package:parrot_messaging/screens/_home-screen/_listView.dart';
 import 'package:parrot_messaging/globalWidget/_customWidget.dart';
-
 import '../../_gobal-supply/_internetConnection.dart';
 import '../../_gobal-supply/_loggedUser.dart';
-import '../../getX/_screenManagement.dart';
 import '_bottomNavigationController.dart';
 
 class Homescreen extends StatefulWidget {

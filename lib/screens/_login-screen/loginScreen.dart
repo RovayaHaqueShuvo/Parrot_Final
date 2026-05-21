@@ -5,26 +5,24 @@ import 'package:parrot_messaging/getX/_screenManagement.dart';
 import 'package:parrot_messaging/globalWidget/_customeButton.dart';
 import 'package:parrot_messaging/globalWidget/_customeTextField.dart';
 
-import '../../globalWidget/_customWidget.dart';
+import '../../_gobal-supply/authVerificationWithPhoneAndSignIN.dart';
 import '../../globalWidget/_customeLocalImgesdecoration.dart';
-import 'loginButtonFunction.dart';
 
 class Loginscreen extends StatelessWidget {
   const Loginscreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(LoginButtonfunctionManagement());
+    final TextEditingController phoneController = TextEditingController();
+    final phoneVerifiedController = Get.put(
+      Authverificationwithphoneandsignin(),
+    );
     final networkController = Get.put(NetworkController());
 
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Get.offAndToNamed(Routes.onBoardingScreen),
-            icon: Icon(Icons.arrow_back),
-          ),
           centerTitle: true,
           title: Obx(
             () =>
@@ -76,16 +74,13 @@ class Loginscreen extends StatelessWidget {
                   LocalImagesDecoration(
                     imageName: "assets/fb.png",
                     onPressed: () {
-
                       print("pressed google");
                     },
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                   LocalImagesDecoration(
                     imageName: "assets/google.png",
-                    onPressed: () {
-                      controller.signInWithGoogle();
-                    },
+                    onPressed: () {},
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                   LocalImagesDecoration(
@@ -105,68 +100,60 @@ class Loginscreen extends StatelessWidget {
               ),
               SizedBox(height: MediaQuery.of(context).size.height * .02),
               CustomTextField(
-                hintText: "Email",
-                prefixIcon: Icons.mail_outline,
-                controller: controller.email,
+                hintText: "Phone Number",
+                controller: phoneVerifiedController.phoneController,
+                prefixtext: '+88 ',
               ),
-              CustomTextField(
-                hintText: "Password",
-                prefixIcon: Icons.lock_outline,
-                isPassword: true,
-                controller: controller.password,
-              ),
+              // CustomTextField(
+              //   hintText: "Password",
+              //   prefixIcon: Icons.lock_outline,
+              //   isPassword: true,
+              //   controller: controller.password,
+              // ),
               Obx(
                 () =>
-                    controller.isLoading.value == 1
-                        ? Column(
-                          children: [
-                            Center(
-                              child: Container(
-                                margin: EdgeInsets.all(
-                                  MediaQuery.of(context).size.height * .03,
-                                ),
-                                width: MediaQuery.of(context).size.height * .14,
-                                height:
-                                    MediaQuery.of(context).size.height * .14,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.7),
-                                  // semi-transparent background
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                padding: EdgeInsets.all(20),
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 6, // thickness of the circle
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.blueAccent,
-                                  ),
-                                  backgroundColor: Colors.white24,
-                                ),
-                              ),
-                            ),
-                          ],
+                    networkController.isActive.value == true
+                        ? CustomeBotton(
+                          barColor: Colors.grey,
+                          text: "Let's Login",
+                          fontSize: 24,
+                          fontColor: Colors.white,
+                          barRadiusColor: Colors.white24,
+                          OnPressed: () {
+                            if (phoneVerifiedController
+                                .phoneController
+                                .value
+                                .text
+                                .isNotEmpty) {
+                              Get.snackbar(
+                                "No Internet",
+                                "Check your internet conncetion. Something went Wrong!",
+                              );
+                            }
+                          },
                         )
-                        : SizedBox(
-                          height: MediaQuery.of(context).size.height * .16,
+                        : CustomeBotton(
+                          barColor: Colors.blue,
+                          text: "Let's Login",
+                          fontSize: 24,
+                          fontColor: Colors.white,
+                          barRadiusColor: Colors.white24,
+                          OnPressed: () {
+                            print(phoneController.text);
+                            phoneVerifiedController.sendOTP();
+                          },
                         ),
               ),
 
-              CustomeBotton(
-                barColor: Colors.blue,
-                text: "Let's Login",
-                fontSize: 24,
-                fontColor: Colors.white,
-                barRadiusColor: Colors.white24,
-                OnPressed: () => controller.loginWithEmaiPass(),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * .02),
-              CustomeBotton(
-                barColor: Colors.white70,
-                text: "Sign Up",
-                fontSize: 24,
-                fontColor: Colors.blue,
-                barRadiusColor: Colors.black12,
-                OnPressed: () => Get.toNamed(Routes.registerScreen),
-              ),
+              // SizedBox(height: MediaQuery.of(context).size.height * .02),
+              // CustomeBotton(
+              //   barColor: Colors.white70,
+              //   text: "Sign Up",
+              //   fontSize: 24,
+              //   fontColor: Colors.blue,
+              //   barRadiusColor: Colors.black12,
+              //   OnPressed: () => Get.toNamed(Routes.registerScreen),
+              // ),
             ],
           ),
         ),

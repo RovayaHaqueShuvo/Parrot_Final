@@ -5,7 +5,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final bool isPassword;
   final TextInputType keyboardType;
-  final IconData? prefixIcon;
+  final String prefixtext ;
   final IconData? suffixIcon;
   final VoidCallback? onSuffixTap;
 
@@ -15,7 +15,7 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
-    this.prefixIcon,
+    required this.prefixtext,
     this.suffixIcon,
     this.onSuffixTap,
   });
@@ -47,9 +47,7 @@ class CustomTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
           ),
-          prefixIcon: prefixIcon != null
-              ? Icon(prefixIcon, color: Colors.grey[600])
-              : null,
+          prefixText: prefixtext,
           suffixIcon: suffixIcon != null
               ? GestureDetector(
             onTap: onSuffixTap,
