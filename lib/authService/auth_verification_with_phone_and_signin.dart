@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../getX/_screenManagement.dart';
+import '../firebase-Database/FirebaseDataBase.dart';
 
 class Authverificationwithphoneandsignin extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -15,8 +16,12 @@ class Authverificationwithphoneandsignin extends GetxController {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
 
+  final FirebaseDataBase crateDatabase = Get.put(FirebaseDataBase());
+
   // Send OTP
   Future<void> sendOTP() async {
+    CircularProgressIndicator();
+
     if (phoneController.text.trim().isEmpty) {
       Get.snackbar("Error", "Please enter phone number");
       return;
@@ -88,12 +93,21 @@ class Authverificationwithphoneandsignin extends GetxController {
 
   // Common sign in method
   Future<void> _signInWithCredential(PhoneAuthCredential credential) async {
-    final UserCredential userCredential =
-    await auth.signInWithCredential(credential);
-
+    final UserCredential userCredential = await auth.signInWithCredential(
+      credential,
+    );
     if (userCredential.user != null) {
-      Get.snackbar("Success", "Login Successful", backgroundColor: Colors.green);
-      Get.offAllNamed('/home'); // Change route as needed
+      // 🔥 DATABASE CREATE / UPDATE
+      await crateDatabase.getCurrentUserDetailsLogged(
+        userCredential.user!,
+        "phone",
+      );
+      Get.snackbar(
+        "Success",
+        "Login Successful",
+        backgroundColor: Colors.green,
+      );
+      Get.offAllNamed(Routes.homeScreen); // Change route as needed
     }
   }
 

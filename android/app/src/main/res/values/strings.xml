@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">parrot_messaging</string>
+    <string name="facebook_app_id">863862792824926</string>
+    <string name="fb_login_protocol_scheme">fb863862792824926</string>
+    <string name="facebook_client_token">6086cf05f14acf9777b5a6e1064b4e4e</string>
+</resources>

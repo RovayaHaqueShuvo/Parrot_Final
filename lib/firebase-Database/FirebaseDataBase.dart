@@ -15,39 +15,53 @@ class CurrentLoggedUser extends GetxController {
   RxList userEmails = RxList<UserModel>([]);
   RxList<Map<String, dynamic>> activeUsersData = <Map<String, dynamic>>[].obs;
 
-  Future<void> getCurrentUserDetailsLoggedGoogle() async {
-    DocumentSnapshot doc =
-        await FirebaseFirestore.instance
-            .collection(USER_DETAILS) // collection name
-            .doc(_user!.email) // document id
-            .get();
 
-    if (doc.exists) {
-      var data = doc.data() as Map<String, dynamic>;
-      uid.value = data['UID'];
-      name.value = data['NAME'];
-      currentEmail.value = data['EMAIL'];
-      photourl.value = data['PHOTO_URL'];
+  Future<void> getCurrentUserDetailsLogged(User user, String loginType) async {
+    final userRef =
+    FirebaseFirestore.instance.collection(USER_DETAILS).doc(user.uid);
 
-      print("User UID: ${data['UID']}");
-      print("User Name: ${data['NAME']}");
-      print("User Email: ${data['EMAIL']}");
-      print("User Photo: ${data['PHOTO_URL']}");
+    final doc = await userRef.get();
+
+    final now = DateTime.now().toIso8601String();
+
+    if (!doc.exists) {
+      // 🆕 NEW USER CREATE
+      await userRef.set({
+        "uid": user.uid,
+        "name": user.displayName ?? "",
+        "email": user.email ?? "",
+        "phoneNumber": user.phoneNumber ?? "",
+        "photoUrl": user.photoURL ?? "",
+        "loginType": loginType,
+
+        "bio": "Hey there 👋",
+        "username": "",
+
+        "isOnline": true,
+        "isActive": true,
+        "isVerified": user.emailVerified,
+
+        // 🔥 PRIVACY SETTINGS (NEW)
+        "hideUserOption": HideUser.nobody.toString(),
+        "activeStatusOption": ActiveStatus.everyone.toString(),
+
+        "createdAt": now,
+        "lastSeen": now,
+        "updatedAt": now,
+
+        "friends": [],
+        "blockedUsers": [],
+        "pushToken": "",
+      });
     } else {
-      print("Document does not exist");
+      // 🔄 EXISTING USER UPDATE
+      await userRef.update({
+        "isOnline": true,
+        "updatedAt": now,
+        "lastSeen": now,
+      });
     }
   }
-
-  // Future<void> fetchAllUsers() async {
-  //   QuerySnapshot snapshot =
-  //   await FirebaseFirestore.instance.collection("USER_DETAILS").get();
-  //
-  //   userEmails.value = snapshot.docs.map((doc) {
-  //     final data = doc.data() as Map<String, dynamic>;
-  //     return UserModel.fromMap(data);
-  //   }).where((user) => user.email != currentEmail.value) // 🔥 filter
-  //       .toList();
-  // }
   Future<void> fetchActiveOthersUsers() async {
     final snapshot =
         await FirebaseFirestore.instance
@@ -92,7 +106,6 @@ class CurrentLoggedUser extends GetxController {
     super.onInit();
 
     Future.delayed(Duration.zero, () async {
-      await getCurrentUserDetailsLoggedGoogle();
       await fetchActiveOthersUsers();
       await fetchAllUsers();
     });

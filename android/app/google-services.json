@@ -13,7 +13,20 @@
           "package_name": "com.example.parrot_messaging"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "838942551991-2d215b362udafbncho9vog3ir8kso8g9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.parrot_messaging",
+            "certificate_hash": "24bfe9b40a2d43349ac8e29fe7846e6d97d0efd0"
+          }
+        },
+        {
+          "client_id": "838942551991-2tflmu2u9fnrp313sadcd1vq80tni5p7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDZ8-UzkmdXlF6fPVpb-lQbObe9H9vRMvE"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "838942551991-2tflmu2u9fnrp313sadcd1vq80tni5p7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
