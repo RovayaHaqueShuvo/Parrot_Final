@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parrot_messaging/_gobal-supply/_internetConnection.dart';
-import 'package:parrot_messaging/getX/_screenManagement.dart';
 import 'package:parrot_messaging/globalWidget/_customeButton.dart';
 import 'package:parrot_messaging/globalWidget/_customeTextField.dart';
 
-import '../../_gobal-supply/authVerificationWithPhoneAndSignIN.dart';
+import '../../authService/auth_verification_with_phone_and_signin.dart';
 import '../../globalWidget/_customeLocalImgesdecoration.dart';
 
 class Loginscreen extends StatelessWidget {
@@ -110,40 +109,23 @@ class Loginscreen extends StatelessWidget {
               //   isPassword: true,
               //   controller: controller.password,
               // ),
-              Obx(
-                () =>
-                    networkController.isActive.value == true
-                        ? CustomeBotton(
-                          barColor: Colors.grey,
-                          text: "Let's Login",
-                          fontSize: 24,
-                          fontColor: Colors.white,
-                          barRadiusColor: Colors.white24,
-                          OnPressed: () {
-                            if (phoneVerifiedController
-                                .phoneController
-                                .value
-                                .text
-                                .isNotEmpty) {
-                              Get.snackbar(
-                                "No Internet",
-                                "Check your internet conncetion. Something went Wrong!",
-                              );
-                            }
-                          },
-                        )
-                        : CustomeBotton(
-                          barColor: Colors.blue,
-                          text: "Let's Login",
-                          fontSize: 24,
-                          fontColor: Colors.white,
-                          barRadiusColor: Colors.white24,
-                          OnPressed: () {
-                            print(phoneController.text);
-                            phoneVerifiedController.sendOTP();
-                          },
-                        ),
-              ),
+              Obx(() {
+
+                return CustomeBotton(
+                  barColor: networkController.isConnected.value
+                      ? Colors.blue
+                      : Colors.grey,
+                  text: "Let's Login",
+                  fontSize: 24,
+                  fontColor: Colors.white,
+                  barRadiusColor: Colors.white24,
+                  OnPressed: () {
+                    networkController.isConnected.value?
+                      phoneVerifiedController.sendOTP(): null;
+
+                  },
+                );
+              }),
 
               // SizedBox(height: MediaQuery.of(context).size.height * .02),
               // CustomeBotton(

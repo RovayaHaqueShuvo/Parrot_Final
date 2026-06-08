@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:parrot_messaging/_gobal-supply/_loggedUser.dart';
+import 'package:parrot_messaging/firebase-Database/FirebaseDataBase.dart';
 import 'package:parrot_messaging/screens/_home-screen/_chatsPerson.dart';
 import '../../getX/_screenManagement.dart';
 
 class MessageTiles extends StatelessWidget {
-  final CurrentLoggedUser currentLoggedUser;
+  final FirebaseDataBase currentLoggedUser;
   final bool isDark;
 
   const MessageTiles({super.key, required this.currentLoggedUser, required this.isDark});

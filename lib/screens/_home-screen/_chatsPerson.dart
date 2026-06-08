@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:parrot_messaging/models/_userModel.dart';
 import 'package:parrot_messaging/globalWidget/_customWidget.dart';
 
-import '../../_gobal-supply/_loggedUser.dart';
+import '../../firebase-Database/FirebaseDataBase.dart';
 import '../../globalWidget/_customeLocalImgesdecoration.dart';
 
 class MessageTile extends StatelessWidget {

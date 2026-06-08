@@ -9,23 +9,23 @@ class NetworkController extends GetxController {
   var isConnected = true.obs;
   late StreamSubscription<InternetConnectionStatus> listener;
 
-  final _user = FirebaseAuth.instance.currentUser;
   RxBool isActive = RxBool(true);
   Rx<DateTime?> lastLogin = Rx<DateTime?>(null);
 
-  // Future<void> setUserActive() async {
-  //   final docRef = FirebaseFirestore.instance.collection(USER_DETAILS).doc(_user!.email);
-  //   await docRef.set({
-  //     "isActive": true,
-  //     "lastLogin": FieldValue.serverTimestamp(),
-  //   }, SetOptions(merge: true)); // 👈 merge:true দিলে পুরোনো data মুছে যাবে না
-  // }
+  // Helper to get current user securely
+  User? get _currentUser => FirebaseAuth.instance.currentUser;
 
 // 🔹 Realtime bind (auto update on change)
   void bindUserStatus() {
+    final user = _currentUser;
+    if (user == null || user.uid.isEmpty) {
+      print("NetworkController: No user logged in to bind status.");
+      return;
+    }
+
     FirebaseFirestore.instance
         .collection(USER_DETAILS)
-        .doc(_user!.email)
+        .doc(user.uid)
         .snapshots()
         .listen((snapshot) {
       if (snapshot.exists) {
@@ -33,8 +33,8 @@ class NetworkController extends GetxController {
         isActive.value = data["isActive"] ?? false;
         if (isConnected.value) {
           lastLogin.value = (data["lastLogin"] != null)
-            ? (data["lastLogin"] as Timestamp).toDate()
-            : null;
+              ? (data["lastLogin"] as Timestamp).toDate()
+              : null;
         }
       }
     });
@@ -42,20 +42,27 @@ class NetworkController extends GetxController {
 
 // 🔹 Update status (active/inactive)
   Future<void> updateUserStatus(bool status) async {
+    final user = _currentUser;
+    if (user == null || user.uid.isEmpty) return;
+
     await FirebaseFirestore.instance
         .collection(USER_DETAILS)
-        .doc(_user!.email)
+        .doc(user.uid)
         .update({
       "isActive": status,
-      if (isConnected.value)"lastLogin": FieldValue.serverTimestamp(), // ✅ optional: update time
+      if (isConnected.value)
+        "lastLogin": FieldValue.serverTimestamp(), // ✅ optional: update time
     });
   }
 
 // 🔹 One-time data retrieve
   Future<void> fetchUserStatus() async {
+    final user = _currentUser;
+    if (user == null || user.uid.isEmpty) return;
+
     final snapshot = await FirebaseFirestore.instance
         .collection(USER_DETAILS)
-        .doc(_user!.email)
+        .doc(user.uid)
         .get();
 
     if (snapshot.exists) {

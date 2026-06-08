@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:parrot_messaging/_gobal-supply/_loggedUser.dart';
+import 'package:parrot_messaging/firebase-Database/FirebaseDataBase.dart';
 
 import '../../Utills/_constant.dart';
 import '../../globalWidget/_customWidget.dart';
 
 class CustomListView extends StatelessWidget {
   final int itemCount;
-  final CurrentLoggedUser currentLoggedUserController;
+  final FirebaseDataBase currentLoggedUserController;
 
   const CustomListView({
     super.key,

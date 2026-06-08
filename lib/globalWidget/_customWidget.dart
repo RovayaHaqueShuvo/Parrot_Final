@@ -43,18 +43,20 @@ class NetworkImages extends StatelessWidget {
           ),
           padding: const EdgeInsets.all(1),
           child: ClipOval(
-            child:
-                OctoImage(
-                  image: CachedNetworkImageProvider(imageName),
-                  placeholderBuilder:
-                      (context) => Center(child: CircularProgressIndicator()),
-                  errorBuilder:
-                      (context, error, stackTrace) =>
-                          Stack(children: [Icon(Icons.error)]),
-                  fit: BoxFit.cover,
-                  width: 80,
-                  height: 80,
-                )
+            child: OctoImage(
+              image:
+                  imageName.startsWith('http')
+                      ? CachedNetworkImageProvider(imageName)
+                      : AssetImage(imageName) as ImageProvider,
+              placeholderBuilder:
+                  (context) => const Center(child: CircularProgressIndicator()),
+              errorBuilder:
+                  (context, error, stackTrace) =>
+                      const Stack(children: [Icon(Icons.error)]),
+              fit: BoxFit.cover,
+              width: 80,
+              height: 80,
+            ),
           ),
         ),
       ),

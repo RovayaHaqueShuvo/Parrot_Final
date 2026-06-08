@@ -3,7 +3,7 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../_gobal-supply/authVerificationWithPhoneAndSignIN.dart';
+import '../../authService/auth_verification_with_phone_and_signin.dart';
 import '../../getX/theme-mode/theme_mode_getX.dart';
 
 class OTPscreen extends StatelessWidget {

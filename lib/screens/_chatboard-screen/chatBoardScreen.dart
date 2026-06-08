@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:parrot_messaging/getX/_screenManagement.dart';
 import 'package:parrot_messaging/screens/_userProfile-screen/_userProfileSetting.dart';
-import '../../_gobal-supply/_loggedUser.dart';
+import '../../firebase-Database/FirebaseDataBase.dart';
 import '../../getX/_chatServiceGetX.dart';
 import '../../getX/_userPresenceService.dart';
 import '../../globalWidget/_customWidget.dart';
@@ -36,8 +36,8 @@ class Chatboardscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ChatController controller = Get.put(ChatController());
-    final CurrentLoggedUser controllerCurrentLogged = Get.put(
-      CurrentLoggedUser(),
+    final FirebaseDataBase controllerCurrentLogged = Get.put(
+      FirebaseDataBase(),
     );
 
     //Map থেকে সব value বের করা

@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:parrot_messaging/Utills/_constant.dart';
 
 import '../models/_userModel.dart';
-import '_internetConnection.dart';
+import '../_gobal-supply/_internetConnection.dart';
 
-class CurrentLoggedUser extends GetxController {
+class FirebaseDataBase extends GetxController {
   final _user = FirebaseAuth.instance.currentUser;
   RxString uid = RxString('');
   RxString name = RxString('');

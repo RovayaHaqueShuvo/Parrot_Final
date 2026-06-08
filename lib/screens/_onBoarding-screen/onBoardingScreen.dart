@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parrot_messaging/authService/auth_verification_with_facebook_and_signin.dart';
 import 'package:parrot_messaging/getX/_screenManagement.dart';
 
+import '../../authService/auth_verification_with_google_and_signin.dart';
 import '../../globalWidget/_customeButton.dart';
 import '../../globalWidget/_customeLocalImgesdecoration.dart';
 
 class Onboardingscreen extends StatelessWidget {
-  const Onboardingscreen({super.key});
+  Onboardingscreen({super.key});
+
+  final facebookController = Get.put(AuthVerificationWithFacebookAndSignIn());
+  final googleController = Get.put(AuthVerificationWithGoogleAndSignIn());
 
   @override
   Widget build(BuildContext context) {
@@ -52,16 +57,40 @@ class Onboardingscreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * .05),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    LocalImagesDecoration(imageName: "assets/fb.png", onPressed: () {}),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                    LocalImagesDecoration(imageName: "assets/google.png", onPressed: () {}),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                    LocalImagesDecoration(imageName: "assets/apple.png", onPressed: () {}),
-                  ],
-                ),
+                Obx(() {
+                  bool isLoading = facebookController.isLoading.value || googleController.isLoading.value;
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      isLoading && facebookController.isLoading.value
+                          ? SizedBox(
+                              width: 55,
+                              height: 55,
+                              child: CircularProgressIndicator(color: Colors.white),
+                            )
+                          : LocalImagesDecoration(
+                              imageName: "assets/fb.png",
+                              onPressed: isLoading ? null : () => facebookController.signInWithFacebook(),
+                            ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                      isLoading && googleController.isLoading.value
+                          ? SizedBox(
+                              width: 55,
+                              height: 55,
+                              child: CircularProgressIndicator(color: Colors.white),
+                            )
+                          : LocalImagesDecoration(
+                              imageName: "assets/google.png",
+                              onPressed: isLoading ? null : () => googleController.signInWithGoogle(),
+                            ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                      LocalImagesDecoration(
+                        imageName: "assets/apple.png",
+                        onPressed: isLoading ? null : () {},
+                      ),
+                    ],
+                  );
+                }),
                 SizedBox(height: MediaQuery.of(context).size.height * .02),
                 Text(
                   "Or",
@@ -74,7 +103,7 @@ class Onboardingscreen extends StatelessWidget {
                 SizedBox(height: MediaQuery.of(context).size.height * .02),
                 CustomeBotton(
                   barColor: Colors.white,
-                  text: "Log In",
+                  text: "Log in with phone number",
                   fontSize: 24,
                   fontColor: Colors.black,
                   barRadiusColor: Colors.transparent,
@@ -85,7 +114,6 @@ class Onboardingscreen extends StatelessWidget {
                   },
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * .05),
-
               ],
             ),
           ),

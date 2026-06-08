@@ -4,7 +4,7 @@ import 'package:parrot_messaging/globalWidget/_containerApp.dart';
 import 'package:parrot_messaging/globalWidget/_customWidget.dart';
 
 import '../../_gobal-supply/_internetConnection.dart';
-import '../../_gobal-supply/_loggedUser.dart';
+import '../../firebase-Database/FirebaseDataBase.dart';
 import '../../globalWidget/_customeListTile.dart';
 
 class UserProfileSetting extends StatelessWidget {
@@ -28,8 +28,8 @@ class UserProfileSetting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final NetworkController networkController = Get.put(NetworkController());
-    final CurrentLoggedUser currentLoggedUser = Get.put(CurrentLoggedUser());
-    currentLoggedUser.getCurrentUserDetailsLoggedGoogle();
+    final FirebaseDataBase currentLoggedUser = Get.put(FirebaseDataBase());
+    //currentLoggedUser.getCurrentUserDetailsLoggedGoogle();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(

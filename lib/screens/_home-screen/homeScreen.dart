@@ -6,7 +6,8 @@ import 'package:parrot_messaging/getX/theme-mode/theme_mode_getX.dart';
 import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
 import 'package:parrot_messaging/globalWidget/_customWidget.dart';
 import '../../_gobal-supply/_internetConnection.dart';
-import '../../_gobal-supply/_loggedUser.dart';
+import '../../firebase-Database/FirebaseDataBase.dart';
+import '../../firebase-Database/currrentUserDataModify.dart';
 import '_bottomNavigationController.dart';
 
 class Homescreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _HomescreenState extends State<Homescreen> {
   void initState() {
     currentLoggedUserController.fetchActiveOthersUsers();
     final NetworkController networkController = Get.put(NetworkController());
-    currentLoggedUserController.getCurrentUserDetailsLoggedGoogle();
+   // currentLoggedUserController.getCurrentUserDetailsLoggedGoogle();
     currentLoggedUserController.fetchAllUsers();
     // networkController.setUserActive();
     networkController.bindUserStatus();
@@ -34,10 +35,12 @@ class _HomescreenState extends State<Homescreen> {
     BottomNavigationController(),
   );
 
-  final CurrentLoggedUser currentLoggedUserController = Get.put(
-    CurrentLoggedUser(),
+  final FirebaseDataBase currentLoggedUserController = Get.put(
+    FirebaseDataBase(),
   );
 
+  //User data get From Firebase Firestore
+  final userData = Get.put(Currrentuserdatamodify());
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -84,18 +87,25 @@ class _HomescreenState extends State<Homescreen> {
             ),
             actions: [
               Obx(
-                () => NetworkImages(
-                  imageName:
-                      currentLoggedUserController.photourl.value.isNotEmpty
-                          ? currentLoggedUserController.photourl.value
-                          : "assets/images/parrot.png",
-                  // ✅ এখানে কাজ করবে
-                  fromletfSpacing: 12,
-                  onPressed: () {
-                    print(currentLoggedUserController.userEmails());
-                  },
-                  size: 42,
-                  controller: networkController,
+                () => Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: InkWell(
+                    onTap: () {
+                      print(currentLoggedUserController.userEmails());
+                    },
+                    child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.white,
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.grey.shade300,
+                        backgroundImage: userData.photoUrl.value.isNotEmpty
+                            ? NetworkImage(userData.photoUrl.value)
+                            : const AssetImage("assets/parrot.png")
+                                as ImageProvider,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],

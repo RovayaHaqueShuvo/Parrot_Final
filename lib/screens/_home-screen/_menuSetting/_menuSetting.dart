@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parrot_messaging/Utills/_constant.dart';
 import 'package:parrot_messaging/_gobal-supply/_logout.dart';
+import 'package:parrot_messaging/firebase-Database/currentUserProfilePictureUpdate.dart';
 
 import '../../../Utills/_customeWidget.dart';
 import '../../../_gobal-supply/_internetConnection.dart';
+import '../../../firebase-Database/currrentUserDataModify.dart';
 import '../../../getX/_screenManagement.dart';
 import '../../../getX/acitve-hide/_acitve&hideStatus.dart';
 import '../../../getX/theme-mode/theme_mode_getX.dart';
@@ -22,9 +25,14 @@ class MenuSetting extends StatelessWidget {
     final NetworkController networkController = Get.put(NetworkController());
     final AuthController logoutController = Get.put(AuthController());
     final ThemeController themeModeController = Get.put(ThemeController());
+    final Currentuserprofilepictureupdate profilePictureController = Get.put(
+      Currentuserprofilepictureupdate(),
+    );
     final BottomNavigationController bottomNavigationController = Get.put(
       BottomNavigationController(),
     );
+    //User data get From Firebase Firestore
+    final userData = Get.put(Currrentuserdatamodify());
     return WillPopScope(
       onWillPop: () async {
         Get.offAllNamed(Routes.homeScreen);
@@ -83,16 +91,22 @@ class MenuSetting extends StatelessWidget {
                         /// PROFILE IMAGE
                         Stack(
                           children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundColor: Colors.white,
-                              child: CircleAvatar(
-                                radius: 45,
-                                backgroundColor: Colors.grey.shade300,
-                                child: Icon(
-                                  Icons.person,
-                                  size: 50,
-                                  color: Colors.grey.shade600,
+                            Obx(
+                              () => CircleAvatar(
+                                radius: 50,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  radius: 45,
+                                  backgroundColor: Colors.grey.shade300,
+                                  backgroundImage:
+                                      userData.photoUrl.value.isNotEmpty
+                                          ? NetworkImage(
+                                            userData.photoUrl.value,
+                                          )
+                                          : const AssetImage(
+                                                "assets/parrot.png",
+                                              )
+                                              as ImageProvider,
                                 ),
                               ),
                             ),
@@ -110,10 +124,69 @@ class MenuSetting extends StatelessWidget {
                                     width: 2,
                                   ),
                                 ),
-                                child: const Icon(
-                                  Icons.edit,
-                                  size: 16,
-                                  color: Colors.white,
+                                child: InkWell(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return SizedBox(
+                                          height: distance.height * .2,
+                                          width: double.infinity,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(16),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                //Data base User Name
+                                                ListTile(
+                                                  leading: Icon(Icons.person),
+                                                  title: Text(
+                                                    "Upload Photo",
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                  onTap: () {
+                                                    profilePictureController
+                                                        .pickImage();
+                                                  },
+                                                ),
+                                                ListTile(
+                                                  leading: Icon(
+                                                    Icons.copy_rounded,
+                                                  ),
+                                                  title: Text(
+                                                    "Paste Link",
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                  onTap: () {
+                                                    Get.toNamed(
+                                                      Routes.editUserName,
+                                                      arguments: {
+                                                        "isPhotoLink": true,
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: const Icon(
+                                    Icons.edit,
+                                    size: 16,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
@@ -123,29 +196,37 @@ class MenuSetting extends StatelessWidget {
                         const SizedBox(height: 15),
 
                         /// NAME
-                        Text(
-                          "Alex Morgan",
-                          style: GoogleFonts.poppins(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color:
-                                themeModeController.isDarkMode.value
-                                    ? Colors.white
-                                    : Colors.black87,
+                        Obx(
+                          () => Text(
+                            userData.name.value.isEmpty
+                                ? "Set your name"
+                                : userData.name.value,
+                            style: GoogleFonts.poppins(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  themeModeController.isDarkMode.value
+                                      ? Colors.white
+                                      : Colors.black87,
+                            ),
                           ),
                         ),
 
                         const SizedBox(height: 5),
 
                         /// EMAIL
-                        Text(
-                          "alex.morgan@example.com",
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            color:
-                                themeModeController.isDarkMode.value
-                                    ? Colors.white
-                                    : Colors.black87,
+                        Obx(
+                          () => Text(
+                            userData.bio.value.isEmpty
+                                ? "No BIO"
+                                : userData.bio.value,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color:
+                                  themeModeController.isDarkMode.value
+                                      ? Colors.white
+                                      : Colors.black87,
+                            ),
                           ),
                         ),
 
@@ -193,9 +274,9 @@ class MenuSetting extends StatelessWidget {
 
                       decoration: BoxDecoration(
                         color:
-                        themeModeController.isDarkMode.value
-                            ? Colors.transparent
-                            : Color(0xffEEF2F5),
+                            themeModeController.isDarkMode.value
+                                ? Colors.transparent
+                                : Color(0xffEEF2F5),
                         borderRadius: BorderRadius.circular(18),
                       ),
 
@@ -213,7 +294,8 @@ class MenuSetting extends StatelessWidget {
                                     child: Padding(
                                       padding: EdgeInsets.all(16),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
 
                                         children: [
                                           Text(
@@ -223,8 +305,12 @@ class MenuSetting extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          SizedBox(height: distance.height*.01),
-                                          Text("Who can able to see your active status"),
+                                          SizedBox(
+                                            height: distance.height * .01,
+                                          ),
+                                          Text(
+                                            "Who can able to see your active status",
+                                          ),
                                           Obx(() {
                                             return Column(
                                               children: [
@@ -232,9 +318,9 @@ class MenuSetting extends StatelessWidget {
                                                   title: const Text("Everyone"),
                                                   value: ActiveStatus.everyone,
                                                   groupValue:
-                                                  activeStatusController
-                                                      .selectedOption
-                                                      .value,
+                                                      activeStatusController
+                                                          .selectedOption
+                                                          .value,
                                                   onChanged: (value) {
                                                     if (value != null) {
                                                       activeStatusController
@@ -249,11 +335,12 @@ class MenuSetting extends StatelessWidget {
                                                   title: const Text(
                                                     "Only Friends",
                                                   ),
-                                                  value: ActiveStatus.onlyFriend,
+                                                  value:
+                                                      ActiveStatus.onlyFriend,
                                                   groupValue:
-                                                  activeStatusController
-                                                      .selectedOption
-                                                      .value,
+                                                      activeStatusController
+                                                          .selectedOption
+                                                          .value,
                                                   onChanged: (value) {
                                                     if (value != null) {
                                                       activeStatusController
@@ -268,9 +355,9 @@ class MenuSetting extends StatelessWidget {
                                                   title: const Text("Nobody"),
                                                   value: ActiveStatus.nobody,
                                                   groupValue:
-                                                  activeStatusController
-                                                      .selectedOption
-                                                      .value,
+                                                      activeStatusController
+                                                          .selectedOption
+                                                          .value,
                                                   onChanged: (value) {
                                                     if (value != null) {
                                                       activeStatusController
@@ -324,9 +411,9 @@ class MenuSetting extends StatelessWidget {
 
                       decoration: BoxDecoration(
                         color:
-                        themeModeController.isDarkMode.value
-                            ? Colors.transparent
-                            : Color(0xffEEF2F5),
+                            themeModeController.isDarkMode.value
+                                ? Colors.transparent
+                                : Color(0xffEEF2F5),
                         borderRadius: BorderRadius.circular(18),
                       ),
 
@@ -344,7 +431,8 @@ class MenuSetting extends StatelessWidget {
                                     child: Padding(
                                       padding: EdgeInsets.all(16),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
 
                                         children: [
                                           Text(
@@ -354,8 +442,12 @@ class MenuSetting extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          SizedBox(height: distance.height*.01),
-                                          Text("Who can able to see  your profile"),
+                                          SizedBox(
+                                            height: distance.height * .01,
+                                          ),
+                                          Text(
+                                            "Who can able to see  your profile",
+                                          ),
                                           Obx(() {
                                             return Column(
                                               children: [
@@ -363,9 +455,9 @@ class MenuSetting extends StatelessWidget {
                                                   title: const Text("Everyone"),
                                                   value: HideUser.everyone,
                                                   groupValue:
-                                                  hideMeStatusController
-                                                      .selectedOption
-                                                      .value,
+                                                      hideMeStatusController
+                                                          .selectedOption
+                                                          .value,
                                                   onChanged: (value) {
                                                     if (value != null) {
                                                       hideMeStatusController
@@ -382,9 +474,9 @@ class MenuSetting extends StatelessWidget {
                                                   ),
                                                   value: HideUser.anonymousUser,
                                                   groupValue:
-                                                  hideMeStatusController
-                                                      .selectedOption
-                                                      .value,
+                                                      hideMeStatusController
+                                                          .selectedOption
+                                                          .value,
                                                   onChanged: (value) {
                                                     if (value != null) {
                                                       hideMeStatusController
@@ -399,9 +491,9 @@ class MenuSetting extends StatelessWidget {
                                                   title: const Text("Nobody"),
                                                   value: HideUser.nobody,
                                                   groupValue:
-                                                  hideMeStatusController
-                                                      .selectedOption
-                                                      .value,
+                                                      hideMeStatusController
+                                                          .selectedOption
+                                                          .value,
                                                   onChanged: (value) {
                                                     if (value != null) {
                                                       hideMeStatusController
@@ -453,12 +545,236 @@ class MenuSetting extends StatelessWidget {
                   /// ACCOUNT TITLE
                   sectionTitle("ACCOUNT"),
 
-                  settingsTile(
-                    icon: Icons.person_outline,
-                    iconColor: Colors.blue,
-                    title: "Profile Information",
-                    ontap: () {},
-                    context: context,
+                  //Profile Information
+                  InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return SizedBox(
+                            height: distance.height,
+                            width: double.infinity,
+                            child: Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //Data base User Name
+                                  Obx(() {
+                                    if (networkController.isConnected.value) {
+                                      return Column(
+                                        children: [
+                                          Text(
+                                            "Profile Information",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              color:
+                                                  themeModeController
+                                                          .isDarkMode
+                                                          .value
+                                                      ? Colors.white
+                                                      : Colors.black87,
+                                            ),
+                                          ),
+                                          Obx(
+                                            () => CircleAvatar(
+                                              radius: 50,
+                                              backgroundColor: Colors.white,
+                                              child: CircleAvatar(
+                                                radius: 45,
+                                                backgroundColor:
+                                                    Colors.grey.shade300,
+                                                backgroundImage:
+                                                    userData
+                                                            .photoUrl
+                                                            .value
+                                                            .isNotEmpty
+                                                        ? NetworkImage(
+                                                          userData
+                                                              .photoUrl
+                                                              .value,
+                                                        )
+                                                        : const AssetImage(
+                                                              "assets/parrot.png",
+                                                            )
+                                                            as ImageProvider,
+                                              ),
+                                            ),
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.person),
+                                            title: Text(
+                                              userData.name.value.isEmpty
+                                                  ? "Name not set yet"
+                                                  : userData.name.value,
+                                            ),
+                                          ),
+                                          ListTile(
+                                            leading: Icon(
+                                              Icons.alternate_email,
+                                            ),
+                                            title: Text(
+                                              userData.username.value.isEmpty
+                                                  ? "No username"
+                                                  : userData.username.value,
+                                            ),
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.photo),
+                                            title: Text(
+                                              userData.photoUrl.value.isEmpty
+                                                  ? "No photo Found"
+                                                  : userData.photoUrl.value,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            trailing:
+                                                userData
+                                                        .photoUrl
+                                                        .value
+                                                        .isNotEmpty
+                                                    ? IconButton(
+                                                      icon: Icon(
+                                                        Icons.copy,
+                                                        size: 20,
+                                                      ),
+                                                      onPressed: () {
+                                                        Clipboard.setData(
+                                                          ClipboardData(
+                                                            text:
+                                                                userData
+                                                                    .photoUrl
+                                                                    .value,
+                                                          ),
+                                                        ).then((_) {
+                                                          Get.rawSnackbar(
+                                                            title: "Copied",
+                                                            message:
+                                                                "Photo URL copied to clipboard",
+                                                            snackPosition:
+                                                                SnackPosition
+                                                                    .TOP,
+                                                            backgroundColor:
+                                                                Colors.teal
+                                                                    .withOpacity(
+                                                                      0.9,
+                                                                    ),
+                                                            margin:
+                                                                const EdgeInsets.all(
+                                                                  10,
+                                                                ),
+                                                            borderRadius: 10,
+                                                          );
+                                                        });
+                                                      },
+                                                    )
+                                                    : null,
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.edit),
+                                            title: Text(
+                                              userData.bio.value.isEmpty
+                                                  ? "Bio"
+                                                  : userData.bio.value,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      return Text(
+                                        "❌ No Internet Connection",
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14,
+                                          color: Colors.red,
+                                        ),
+                                      );
+                                    }
+                                  }),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: settingsTile(
+                      icon: Icons.person_outline,
+                      iconColor: Colors.blue,
+                      title: "Profile Information",
+                      ontap: () {},
+                      context: context,
+                    ),
+                  ),
+
+                  ///UserName
+                  InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return SizedBox(
+                            height: distance.height * .2,
+                            width: double.infinity,
+                            child: Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //Data base User Name
+                                  Obx(
+                                    () => Text(
+                                      userData.username.value.isEmpty
+                                          ? "No username"
+                                          : userData.username.value,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        color:
+                                            themeModeController.isDarkMode.value
+                                                ? Colors.white
+                                                : Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.edit),
+                                    title: const Text(
+                                      "Edit username",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    onTap:
+                                        () => Get.toNamed(
+                                          Routes.editUserName,
+                                          arguments: {"isPhotoLink": false},
+                                        ),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.copy_rounded),
+                                    title: Text(
+                                      "Copy Link",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    onTap: () {},
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: settingsTile(
+                      icon: Icons.alternate_email,
+                      iconColor: Colors.pinkAccent,
+                      title: "Username",
+                      ontap: () {},
+                      context: context,
+                    ),
                   ),
 
                   settingsTile(
