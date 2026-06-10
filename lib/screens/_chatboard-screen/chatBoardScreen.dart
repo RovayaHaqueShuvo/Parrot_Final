@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:parrot_messaging/Utills/_constant.dart';
 import 'package:parrot_messaging/getX/_screenManagement.dart';
 import 'package:parrot_messaging/screens/_userProfile-screen/_userProfileSetting.dart';
 import '../../firebase-Database/FirebaseDataBase.dart';
@@ -84,8 +85,8 @@ class Chatboardscreen extends StatelessWidget {
                 StreamBuilder<DocumentSnapshot>(
                   stream:
                       FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(_email)
+                          .collection(USER_DETAILS)
+                          .doc(_uid)
                           .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:parrot_messaging/getX/_screenManagement.dart';
 import 'package:parrot_messaging/getX/theme-mode/theme_mode_getX.dart';
 import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
 import 'package:parrot_messaging/globalWidget/_customWidget.dart';
@@ -22,7 +23,7 @@ class _HomescreenState extends State<Homescreen> {
   void initState() {
     currentLoggedUserController.fetchActiveOthersUsers();
     final NetworkController networkController = Get.put(NetworkController());
-   // currentLoggedUserController.getCurrentUserDetailsLoggedGoogle();
+    // currentLoggedUserController.getCurrentUserDetailsLoggedGoogle();
     currentLoggedUserController.fetchAllUsers();
     // networkController.setUserActive();
     networkController.bindUserStatus();
@@ -41,6 +42,7 @@ class _HomescreenState extends State<Homescreen> {
 
   //User data get From Firebase Firestore
   final userData = Get.put(Currrentuserdatamodify());
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -99,10 +101,11 @@ class _HomescreenState extends State<Homescreen> {
                       child: CircleAvatar(
                         radius: 20,
                         backgroundColor: Colors.grey.shade300,
-                        backgroundImage: userData.photoUrl.value.isNotEmpty
-                            ? NetworkImage(userData.photoUrl.value)
-                            : const AssetImage("assets/parrot.png")
-                                as ImageProvider,
+                        backgroundImage:
+                            userData.photoUrl.value.isNotEmpty
+                                ? NetworkImage(userData.photoUrl.value)
+                                : const AssetImage("assets/parrot.png")
+                                    as ImageProvider,
                       ),
                     ),
                   ),
@@ -143,27 +146,33 @@ class _HomescreenState extends State<Homescreen> {
                               ),
                             ],
                   ),
-                  child: TextField(
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: "Search...",
-                      hintStyle: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white54
-                                : Colors.grey.shade600,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(30),
+                    onTap: () => Get.toNamed(Routes.searchscreen),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.search,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white70
+                                    : Colors.grey.shade700,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            "Search...",
+                            style: TextStyle(
+                              color:
+                                  Theme.of(context).brightness == Brightness.dark
+                                      ? Colors.white54
+                                      : Colors.grey.shade600,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ],
                       ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color:
-                            Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white70
-                                : Colors.grey.shade700,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                 ),

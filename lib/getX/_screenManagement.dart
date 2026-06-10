@@ -4,6 +4,7 @@ import 'package:parrot_messaging/screens/_chatboard-screen/chatBoardScreen.dart'
 import 'package:parrot_messaging/screens/_home-screen/homeScreen.dart';
 import 'package:parrot_messaging/screens/_login-screen/otpScreen.dart';
 import 'package:parrot_messaging/screens/_onBoarding-screen/onBoardingScreen.dart';
+import 'package:parrot_messaging/screens/_search-screen/searchScreen.dart';
 import 'package:parrot_messaging/screens/_splash-screen/splashScreen.dart';
 
 
@@ -25,6 +26,7 @@ class Routes {
   static String bottomNotification = "/bottomNotification";
   static String userProfileSetting = "/userProfileSetting";
   static String editUserName = "/editUserName";
+  static String searchscreen = "/searchscreen";
 }
 
 class RoutesPages {
@@ -53,5 +55,6 @@ class RoutesPages {
     GetPage(name: Routes.bottomNotification, page: () => BottomNotification()),
     GetPage(name: Routes.userProfileSetting, page: () => UserProfileSetting()),
     GetPage(name: Routes.editUserName, page: () => EditUserName()),
+    GetPage(name: Routes.searchscreen, page: () => Searchscreen()),
   ];
 }
