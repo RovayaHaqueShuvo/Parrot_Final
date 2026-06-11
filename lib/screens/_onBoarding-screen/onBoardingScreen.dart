@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parrot_messaging/authService/auth_verification_with_facebook_and_signin.dart';
-import 'package:parrot_messaging/getX/_screenManagement.dart';
+import 'package:parrot_messaging/getX/_ScreenManagement/_screenManagement.dart';
 
 import '../../authService/auth_verification_with_google_and_signin.dart';
 import '../../globalWidget/_customeButton.dart';

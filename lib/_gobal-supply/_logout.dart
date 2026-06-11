@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:parrot_messaging/getX/_screenManagement.dart';
+import 'package:parrot_messaging/getX/_ScreenManagement/_screenManagement.dart';
 
 class AuthController extends GetxController {
   void logout() async {

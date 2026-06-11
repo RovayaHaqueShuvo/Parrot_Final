@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../getX/_screenManagement.dart'; // AuthWrapper import করো
+import '../../getX/_ScreenManagement/_screenManagement.dart'; // AuthWrapper import করো
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:parrot_messaging/firebase-Database/FirebaseDataBase.dart';
 import 'package:parrot_messaging/screens/_home-screen/_chatsPerson.dart';
-import '../../getX/_screenManagement.dart';
+import '../../getX/_ScreenManagement/_screenManagement.dart';
 
 class MessageTiles extends StatelessWidget {
   final FirebaseDataBase currentLoggedUser;

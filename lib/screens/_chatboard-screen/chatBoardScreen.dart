@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:parrot_messaging/Utills/_constant.dart';
-import 'package:parrot_messaging/getX/_screenManagement.dart';
+
 import 'package:parrot_messaging/screens/_userProfile-screen/_userProfileSetting.dart';
+import '../../_Firebase_ChatService/Chat_Model_Class/_massageModel.dart';
 import '../../firebase-Database/FirebaseDataBase.dart';
-import '../../getX/_chatServiceGetX.dart';
+import '../../_Firebase_ChatService/_chatServiceGetX.dart';
+
 import '../../getX/_userPresenceService.dart';
 import '../../globalWidget/_customWidget.dart';
 import '_chatBarStyleGlobalUser.dart';
@@ -16,42 +18,70 @@ class ChatController extends GetxController {
   final ChatService chatService = Get.put(ChatService());
   final UserPresenceService presenceService = Get.put(UserPresenceService());
 
+  final String otherUserId;
+  late final String chatId;
+
+  ChatController({required this.otherUserId});
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Chat screen এ ঢুকলে presence set করো
+    chatId = chatService.getChatId(
+      chatService.currentUserId.value,
+      otherUserId,
+    );
+    chatService.enterChat(chatId);
+    // সব unread message read করে দাও
+    chatService.markMessagesAsRead(otherUserId);
+  }
+
   @override
   void onClose() {
     chatsTextController.dispose();
+    // Chat screen থেকে বের হলে presence clear করো
+    chatService.leaveChat();
     super.onClose();
   }
 
-  void sendMessage(String otherUserId) {
+  void sendMessage() {
     if (chatsTextController.text.trim().isNotEmpty) {
-      chatService.sendMessage(otherUserId, chatsTextController.text.trim());
+      chatService.sendMessage(
+        receiverId: otherUserId,
+        text: chatsTextController.text.trim(),
+      );
       chatsTextController.clear();
     }
   }
 }
 
 class Chatboardscreen extends StatelessWidget {
-  final Map<String, dynamic> userData; // Map নিলাম
+  final Map<String, dynamic> userData;
+
   const Chatboardscreen({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
-    final ChatController controller = Get.put(ChatController());
-    final FirebaseDataBase controllerCurrentLogged = Get.put(
-      FirebaseDataBase(),
-    );
-
-    //Map থেকে সব value বের করা
-    final _uid =
+    // uid আগে বের করো — ChatController constructor এ দরকার
+    final String uid =
         userData['UID'] is String
             ? userData['UID'].toString()
             : (userData['UID']?['id'] ?? '').toString();
-    final _name =
+    final String name =
         userData['NAME'] is String ? userData['NAME'].toString() : 'Unknown';
-    final _email =
+    final String email =
         userData['EMAIL'] is String ? userData['EMAIL'].toString() : '';
-    final _photoUrl =
+    final String photoUrl =
         userData['PHOTO_URL'] is String ? userData['PHOTO_URL'].toString() : '';
+
+    // uid constructor এ pass করো — onInit() এর আগেই set হবে
+    final ChatController controller = Get.put(
+      ChatController(otherUserId: uid),
+      tag: uid,
+    );
+    final FirebaseDataBase controllerCurrentLogged = Get.put(
+      FirebaseDataBase(),
+    );
 
     return SafeArea(
       child: Scaffold(
@@ -68,25 +98,23 @@ class Chatboardscreen extends StatelessWidget {
               Get.to(
                 () => UserProfileSetting(
                   isCurrentUser: false,
-                  golbeUserName: _name,
-                  golbeUserUID: _uid,
-                  golbeUserEmail: _email,
-                  golbeUserPhotoURL: _photoUrl,
+                  golbeUserName: name,
+                  golbeUserUID: uid,
+                  golbeUserEmail: email,
+                  golbeUserPhotoURL: photoUrl,
                   golbeUserActiveStues: true,
                 ),
               );
             },
             child: Row(
               children: [
-                // ✅ Profile Picture Placeholder
-                NetworkImages(imageName: _photoUrl, size: 45),
+                NetworkImages(imageName: photoUrl, size: 45),
                 const SizedBox(width: 10),
-                // ✅ Dynamic Name + Presence
                 StreamBuilder<DocumentSnapshot>(
                   stream:
                       FirebaseFirestore.instance
                           .collection(USER_DETAILS)
-                          .doc(_uid)
+                          .doc(uid)
                           .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -95,15 +123,13 @@ class Chatboardscreen extends StatelessWidget {
                         style: TextStyle(color: Colors.white),
                       );
                     }
-
                     final status = controller.presenceService
                         .getStatusFromSnapshot(snapshot.data!);
-
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _name,
+                          name,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: const TextStyle(
@@ -131,12 +157,7 @@ class Chatboardscreen extends StatelessWidget {
           ),
           actions: [
             IconButton(
-              onPressed: () {
-                print("User UID: $_uid");
-                print("User Name: $_name");
-                print("User Email: $_email");
-                print("User Photo: $_photoUrl");
-              },
+              onPressed: () {},
               icon: const Icon(Icons.call, color: Colors.white),
             ),
             IconButton(
@@ -147,50 +168,28 @@ class Chatboardscreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            // ✅ Messages Stream
+            // ─── Messages Stream (MessageModel list) ───────────────────
             Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: controller.chatService.getMessages(_email),
+              child: StreamBuilder<List<MessageModel>>(
+                stream: controller.chatService.getMessages(uid),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  final messages = snapshot.data!.docs;
 
-                  // 🔹 প্রতিটি মেসেজ থেকে sending time বের করা
-                  final sentTimes =
-                      messages.map((msg) {
-                        final data = msg.data() as Map<String, dynamic>;
-                        final timestampData = data['timestamp'];
+                  final messages = snapshot.data!;
 
-                        DateTime dateTime;
-
-                        if (timestampData is Timestamp) {
-                          dateTime = timestampData.toDate();
-                        } else if (timestampData is String) {
-                          dateTime = DateTime.parse(timestampData);
-                        } else {
-                          dateTime = DateTime.now();
-                        }
-
-                        // সময় ফরম্যাট করা
-                        final formattedTime =
-                            '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-
-                        return formattedTime;
-                      }).toList();
-
-                  // 🔥 Unread Count বের করা
+                  // Unread count (isRead field ব্যবহার)
                   final unreadCount =
                       messages
                           .where(
                             (msg) =>
-                                msg['receiverId'] ==
+                                msg.senderId !=
                                     controller
                                         .chatService
                                         .currentUserId
                                         .value &&
-                                msg['read'] == false,
+                                !msg.isRead,
                           )
                           .length;
 
@@ -214,16 +213,16 @@ class Chatboardscreen extends StatelessWidget {
                           reverse: true,
                           itemCount: messages.length,
                           itemBuilder: (context, index) {
-                            final msg =
-                                messages[index].data() as Map<String, dynamic>;
-                            final isMe =
-                                msg['senderId'] ==
+                            final MessageModel msg = messages[index];
+                            final bool isMe =
+                                msg.senderId ==
                                 controller.chatService.currentUserId.value;
 
-                            // ✅ যদি আমি receiver হই, তখন read = true update করে দেবে
-                            if (!isMe && msg['read'] == false) {
-                              messages[index].reference.update({'read': true});
-                            }
+                            // Time format করা (MessageModel.timestamp থেকে)
+                            final DateTime dateTime = msg.timestamp.toDate();
+                            final String formattedTime =
+                                '${dateTime.hour.toString().padLeft(2, '0')}:'
+                                '${dateTime.minute.toString().padLeft(2, '0')}';
 
                             return Row(
                               mainAxisAlignment:
@@ -232,21 +231,18 @@ class Chatboardscreen extends StatelessWidget {
                                       : MainAxisAlignment.start,
                               children: [
                                 isMe
-                                    ? InkWell(
-                                      onTap: () {
-                                        print("Sending time is: $sentTimes");
-                                      },
-                                      child: ChatBarStyleLogedUser(
-                                        userPhoto:
-                                            controllerCurrentLogged
-                                                .photourl
-                                                .value,
-                                        massage: msg['message'],
-                                      ),
+                                    ? ChatBarStyleLogedUser(
+                                      userPhoto:
+                                          controllerCurrentLogged
+                                              .photourl
+                                              .value,
+                                      massage: msg.text, // 'message' → 'text'
+                                      sentTime: formattedTime,
                                     )
                                     : ChatBarStyleGlobalUser(
-                                      userPhoto: _photoUrl,
-                                      massage: msg['message'],
+                                      userPhoto: photoUrl,
+                                      massage: msg.text, // 'message' → 'text'
+                                      sentTime: formattedTime,
                                     ),
                               ],
                             );
@@ -259,7 +255,7 @@ class Chatboardscreen extends StatelessWidget {
               ),
             ),
 
-            // ✅ Input Bar
+            // ─── Input Bar ─────────────────────────────────────────────
             Padding(
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -298,7 +294,7 @@ class Chatboardscreen extends StatelessWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.send, color: Colors.blue),
-                      onPressed: () => controller.sendMessage(_email),
+                      onPressed: controller.sendMessage,
                     ),
                   ],
                 ),

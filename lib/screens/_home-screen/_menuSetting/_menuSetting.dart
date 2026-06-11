@@ -9,7 +9,7 @@ import 'package:parrot_messaging/firebase-Database/currentUserProfilePictureUpda
 import '../../../Utills/_customeWidget.dart';
 import '../../../_gobal-supply/_internetConnection.dart';
 import '../../../firebase-Database/currrentUserDataModify.dart';
-import '../../../getX/_screenManagement.dart';
+import '../../../getX/_ScreenManagement/_screenManagement.dart';
 import '../../../getX/acitve-hide/_acitve&hideStatus.dart';
 import '../../../getX/theme-mode/theme_mode_getX.dart';
 import '../_bottomNavigationController.dart';

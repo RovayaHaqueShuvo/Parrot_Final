@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:parrot_messaging/firebase-Database/FirebaseDataBase.dart';
-import 'package:parrot_messaging/getX/_screenManagement.dart';
+import 'package:parrot_messaging/getX/_ScreenManagement/_screenManagement.dart';
 
 class AuthVerificationWithFacebookAndSignIn extends GetxController {
   final createDatabase = Get.put(FirebaseDataBase());

@@ -5,13 +5,19 @@ import '../../globalWidget/_customWidget.dart' show NetworkImages;
 class ChatBarStyleGlobalUser extends StatelessWidget {
   final String userPhoto;
   final String massage;
+  final String sentTime;
 
-  const ChatBarStyleGlobalUser({super.key, required this.massage, required this.userPhoto});
+  const ChatBarStyleGlobalUser({
+    super.key,
+    required this.massage,
+    required this.userPhoto,
+    required this.sentTime,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 05, vertical: 02),
+      padding: const EdgeInsets.symmetric(horizontal: 05, vertical: 02),
       child: Container(
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.75,
@@ -22,16 +28,14 @@ class ChatBarStyleGlobalUser extends StatelessWidget {
             bottomLeft: Radius.circular(16),
             bottomRight: Radius.circular(16),
           ),
-          color: Color(0xFFFF8B8B),
+          color: const Color(0xFFFF8B8B),
         ),
         padding: const EdgeInsets.all(8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             NetworkImages(imageName: userPhoto, size: 30),
             const SizedBox(width: 10),
-            // Column for text + timestamp
             Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -48,10 +52,10 @@ class ChatBarStyleGlobalUser extends StatelessWidget {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
-                      "08:02 AM",
+                      sentTime,
                       style: const TextStyle(
                         fontSize: 12,
-                        color:Color(0xFFD5E6FD)
+                        color: Color(0xFFD5E6FD),
                       ),
                     ),
                   ),

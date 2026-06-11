@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parrot_messaging/firebase-Database/QuaryUserWithSearch.dart';
-import 'package:parrot_messaging/getX/_screenManagement.dart';
+import 'package:parrot_messaging/getX/_ScreenManagement/_screenManagement.dart';
 
 class Searchscreen extends StatelessWidget {
   const Searchscreen({super.key});

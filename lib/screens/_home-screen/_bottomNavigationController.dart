@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:parrot_messaging/getX/_screenManagement.dart';
+import 'package:parrot_messaging/getX/_ScreenManagement/_screenManagement.dart';
 
 class BottomNavigationController extends GetxController {
   RxInt selectedIndex = RxInt(0);

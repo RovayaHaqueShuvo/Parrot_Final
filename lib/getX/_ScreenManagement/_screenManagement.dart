@@ -8,11 +8,11 @@ import 'package:parrot_messaging/screens/_search-screen/searchScreen.dart';
 import 'package:parrot_messaging/screens/_splash-screen/splashScreen.dart';
 
 
-import '../screens/_home-screen/_bottomNotification.dart';
-import '../screens/_home-screen/_menuSetting/_menuSetting.dart';
-import '../screens/_home-screen/_menuSetting/_userProfileSetting/_edit_username.dart';
-import '../screens/_userProfile-screen/_userProfileSetting.dart';
-import '../screens/_login-screen/loginScreen.dart';
+import '../../screens/_home-screen/_bottomNotification.dart';
+import '../../screens/_home-screen/_menuSetting/_menuSetting.dart';
+import '../../screens/_home-screen/_menuSetting/_userProfileSetting/_edit_username.dart';
+import '../../screens/_userProfile-screen/_userProfileSetting.dart';
+import '../../screens/_login-screen/loginScreen.dart';
 
 class Routes {
   static String splashScreen = "/splash";

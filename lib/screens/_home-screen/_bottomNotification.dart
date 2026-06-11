@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../_gobal-supply/_internetConnection.dart';
-import '../../getX/_screenManagement.dart';
+import '../../getX/_ScreenManagement/_screenManagement.dart';
 import '../../getX/theme-mode/theme_mode_getX.dart';
 import '../../globalWidget/_containerApp.dart';
 import '_bottomNavigationController.dart' show BottomNavigationController;

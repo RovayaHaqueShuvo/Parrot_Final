@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:parrot_messaging/getX/_screenManagement.dart';
+import 'package:parrot_messaging/getX/_ScreenManagement/_screenManagement.dart';
 import 'package:parrot_messaging/getX/theme-mode/theme_mode_getX.dart';
 import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
 import 'package:parrot_messaging/globalWidget/_customWidget.dart';
