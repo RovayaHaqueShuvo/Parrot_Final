@@ -90,7 +90,7 @@ class Chatboardscreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: const Color(0xFF1D4321),
           leading: IconButton(
-            onPressed: Get.back,
+            onPressed: () => Get.back(),
             icon: const Icon(Icons.arrow_back, color: Colors.white),
           ),
           title: InkWell(
