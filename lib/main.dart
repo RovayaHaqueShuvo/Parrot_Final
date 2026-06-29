@@ -17,7 +17,10 @@ void main() async {
 
   // GetStorage initialize
   await GetStorage.init();
-  Get.put(FirebaseDataBase(), permanent: true);
+  
+  // ThemeController must be permanent to survive logout deleteAll()
+  Get.put(ThemeController(), permanent: true);
+
   runApp(const MyApp());
 }
 
@@ -27,17 +30,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final ThemeController themeController = Get.put(ThemeController());
-    return GetMaterialApp(
-      defaultTransition: Transition.leftToRightWithFade,
-      transitionDuration: const Duration(milliseconds: 250),
-      debugShowCheckedModeBanner: false,
-      title: 'Parrot',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: themeController.themeMode,
-      initialRoute: Routes.splashScreen,
-      getPages: RoutesPages.routes,
+    return Obx(
+      () {
+        final themeController = Get.find<ThemeController>();
+        return GetMaterialApp(
+          defaultTransition: Transition.leftToRightWithFade,
+          transitionDuration: const Duration(milliseconds: 250),
+          debugShowCheckedModeBanner: false,
+          title: 'Parrot',
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: themeController.themeMode,
+          initialRoute: Routes.splashScreen,
+          getPages: RoutesPages.routes,
+        );
+      },
     );
   }
 }

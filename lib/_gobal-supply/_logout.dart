@@ -1,28 +1,56 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:parrot_messaging/Utills/_constant.dart';
 import 'package:parrot_messaging/getX/_ScreenManagement/_screenManagement.dart';
 
 class AuthController extends GetxController {
+  void showLogoutDialog() {
+    Get.defaultDialog(
+      title: "Logout",
+      middleText: "Are you sure you want to logout?",
+      textConfirm: "Logout",
+      textCancel: "Cancel",
+      confirmTextColor: Colors.white,
+      cancelTextColor: Colors.red,
+      buttonColor: Colors.red,
+      onConfirm: () {
+        Get.back(); // Close the dialog
+        logout();   // Perform logout
+      },
+      onCancel: () {
+        Navigator.of(Get.overlayContext!).pop();
+      },
+    );
+  }
+
   void logout() async {
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection(USER_DETAILS)
+            .doc(user.uid)
+            .update({
+          "isOnline": false,
+          "lastSeen": DateTime.now().toIso8601String(),
+        });
+      }
+
       // Firebase থেকে sign out
       await FirebaseAuth.instance.signOut();
 
-      // Local storage clear (GetStorage ব্যবহার করলে)
+      // Local storage clear
       final box = GetStorage();
       await box.erase();
 
-      // যদি SharedPreferences ব্যবহার করো তাহলে:
-      // final prefs = await SharedPreferences.getInstance();
-      // await prefs.clear();
+      // Clear dependencies (don't use force: true to keep permanent controllers like Theme)
+      Get.deleteAll();
 
-      // Hive হলে:
-      // await Hive.deleteFromDisk();
-
-      // Login Screen এ redirect
-      Get.offAllNamed(Routes.loginScreen);
+      // Onboarding Screen এ redirect
+      Get.offAllNamed(Routes.onBoardingScreen);
 
       // Snackbar দেখাও
       Get.snackbar(
@@ -31,14 +59,11 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.shade300,
         colorText: Colors.white,
-        margin: EdgeInsets.all(12),
+        margin: const EdgeInsets.all(12),
         borderRadius: 12,
-        icon: Icon(Icons.logout, color: Colors.white), // 👈 logout icon দিলাম
+        icon: const Icon(Icons.logout, color: Colors.white),
         shouldIconPulse: true,
-        duration: Duration(seconds: 2),
-        animationDuration: Duration(milliseconds: 150),
-        forwardAnimationCurve: Curves.easeOut,
-        reverseAnimationCurve: Curves.easeInCubic,
+        duration: const Duration(seconds: 2),
       );
     } catch (e) {
       Get.snackbar(
@@ -50,5 +75,4 @@ class AuthController extends GetxController {
       );
     }
   }
-
 }

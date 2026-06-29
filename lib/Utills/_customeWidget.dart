@@ -35,25 +35,23 @@ Widget settingsTile({
     color:Theme.of(context).scaffoldBackgroundColor,
 
     child: ListTile(
+      onTap: ontap,
       leading: Icon(icon, color: iconColor),
-
       title: Text(
         title,
         style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
       ),
-
-      trailing:
-      trailingSwitch
+      trailing: trailingSwitch
           ? Switch(
-        value: false,
-        onChanged: (value)=> ontap,
-        activeColor: Colors.green,
-      )
+              value: false,
+              onChanged: (value) => ontap(),
+              activeColor: Colors.green,
+            )
           : const Icon(
-        Icons.arrow_forward_ios,
-        size: 16,
-        color: Colors.grey,
-      ),
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.grey,
+            ),
     ),
   );
 }

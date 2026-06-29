@@ -33,7 +33,7 @@ class _HomescreenState extends State<Homescreen> {
   }
 
   final NetworkController networkController = Get.put(NetworkController());
-  final ThemeController thememodeController = Get.put(ThemeController());
+  final ThemeController thememodeController = Get.find<ThemeController>();
   final BottomNavigationController bottomNavigationController = Get.put(
     BottomNavigationController(),
   );
