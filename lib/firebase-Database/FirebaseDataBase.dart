@@ -4,10 +4,8 @@ import 'package:get/get.dart';
 import 'package:parrot_messaging/Utills/_constant.dart';
 
 import '../models/_userModel.dart';
-import '../_gobal-supply/_internetConnection.dart';
 
 class FirebaseDataBase extends GetxController {
-  final _user = FirebaseAuth.instance.currentUser;
   RxString uid = RxString('');
   RxString name = RxString('');
   RxString photourl = RxString('');
@@ -75,27 +73,42 @@ class FirebaseDataBase extends GetxController {
 
   Future<void> fetchAllUsers() async {
     try {
-      final snapshot =
-          await FirebaseFirestore.instance
-              .collection("USER_DETAILS")
-              .where(
-                "isActive",
-                whereIn: [true, false],
-              ) // সব user (active/inactive)
-              .get();
+      final User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) return;
 
-      userEmails.value =
-          snapshot.docs
-              .map((doc) => UserModel.fromMap(doc.data()))
-              .where(
-                (user) => user.email != currentEmail.value,
-              ) // Current user বাদ
-              .toList();
+      currentEmail.value = currentUser.email ?? "";
+
+      // Step 1: Current user এর friends list নিয়ে আসা
+      final userDoc = await FirebaseFirestore.instance
+          .collection(USER_DETAILS)
+          .doc(currentUser.uid)
+          .get();
+
+      List<dynamic> friendIds = userDoc.data()?['friends'] ?? [];
+
+      if (friendIds.isEmpty) {
+        userEmails.value = [];
+        print("ℹ️ No friends found");
+        return;
+      }
+
+      // Step 2: শুধু friends এর ডাটা লোড করা
+      final snapshot = await FirebaseFirestore.instance
+          .collection(USER_DETAILS)
+          .where(FieldPath.documentId, whereIn: friendIds)
+          .get();
+
+      userEmails.value = snapshot.docs
+          .map((doc) => UserModel.fromMap(doc.data()))
+          .toList();   // এখানে আর current user বাদ দিতে হবে না
+
+      print("✅ Friends Loaded: ${userEmails.length} users");
+
     } catch (e) {
-      print('Error fetching users: $e');
+      print('Error fetching friends: $e');
       Get.snackbar(
         'Error',
-        'Failed to fetch users: $e',
+        'Failed to fetch friends: $e',
         snackPosition: SnackPosition.BOTTOM,
       );
     }

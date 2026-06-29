@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:parrot_messaging/getX/_ScreenManagement/_screenManagement.dart';
 import 'package:parrot_messaging/getX/theme-mode/theme_mode_getX.dart';
 import 'package:parrot_messaging/screens/_home-screen/_messageTile.dart';
-import 'package:parrot_messaging/globalWidget/_customWidget.dart';
+import '../../_Firebase_UserFriends/_UsersFriendsCollection.dart';
 import '../../_gobal-supply/_internetConnection.dart';
 import '../../firebase-Database/FirebaseDataBase.dart';
 import '../../firebase-Database/currrentUserDataModify.dart';
@@ -27,6 +27,8 @@ class _HomescreenState extends State<Homescreen> {
     currentLoggedUserController.fetchAllUsers();
     // networkController.setUserActive();
     networkController.bindUserStatus();
+    //Make user adding In Friend List
+    UsersFriendsCollection().userFriends();
     super.initState();
   }
 
@@ -36,9 +38,7 @@ class _HomescreenState extends State<Homescreen> {
     BottomNavigationController(),
   );
 
-  final FirebaseDataBase currentLoggedUserController = Get.put(
-    FirebaseDataBase(),
-  );
+  final FirebaseDataBase currentLoggedUserController = Get.put(FirebaseDataBase());
 
   //User data get From Firebase Firestore
   final userData = Get.put(Currrentuserdatamodify());
@@ -47,11 +47,8 @@ class _HomescreenState extends State<Homescreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      // ✅ default back prevent করবে
       onPopInvoked: (didPop) {
-        if (didPop) return; // যদি pop হয়ে থাকে তাহলে কিছু করবে না
-
-        // এখানে তোমার কাস্টম ব্যাক হ্যান্ডলিং হবে
+        if (didPop) return;
         exit(0);
       },
       child: SafeArea(
@@ -179,46 +176,51 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
           ),
-          body: Obx(() {
-            return SingleChildScrollView(
-              child: Column(
+          body: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "All",
-                          style: TextStyle(color: Colors.grey, fontSize: 20),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Unread",
-                          style: TextStyle(color: Colors.grey, fontSize: 20),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Groups",
-                          style: TextStyle(color: Colors.grey, fontSize: 20),
-                        ),
-                      ),
-                    ],
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      "All",
+                      style: TextStyle(color: Colors.grey, fontSize: 20),
+                    ),
                   ),
-                  MessageTiles(
-                    currentLoggedUser: currentLoggedUserController,
-                    isDark: thememodeController.isDarkMode.value,
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      "Unread",
+                      style: TextStyle(color: Colors.grey, fontSize: 20),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      "Groups",
+                      style: TextStyle(color: Colors.grey, fontSize: 20),
+                    ),
                   ),
                 ],
               ),
-            );
-          }),
+              Expanded(
+                child: Obx(
+                  () => MessageTiles(
+                    currentLoggedUser: currentLoggedUserController,
+                    isDark: thememodeController.isDarkMode.value,
+                    onRefresh: () async {
+                      await currentLoggedUserController.fetchActiveOthersUsers();
+                      await UsersFriendsCollection().userFriends();
+                      await currentLoggedUserController.fetchAllUsers();
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
           bottomNavigationBar: Obx(
             () => BottomNavigationBar(
               currentIndex: bottomNavigationController.selectedIndex.value,

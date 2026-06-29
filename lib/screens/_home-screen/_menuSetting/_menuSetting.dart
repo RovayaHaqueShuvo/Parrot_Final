@@ -33,10 +33,11 @@ class MenuSetting extends StatelessWidget {
     );
     //User data get From Firebase Firestore
     final userData = Get.put(Currrentuserdatamodify());
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
         Get.offAllNamed(Routes.homeScreen);
-        return Future.value(false);
       },
       child: SafeArea(
         child: Scaffold(
@@ -879,7 +880,7 @@ class MenuSetting extends StatelessWidget {
                     icon: Icons.logout,
                     iconColor: Colors.red,
                     title: "Logout",
-                    ontap: () {},
+                    ontap: () => logoutController.logout(),
                   ),
                 ],
               ),

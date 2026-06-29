@@ -8,6 +8,7 @@ import 'package:parrot_messaging/Utills/_constant.dart';
 class NetworkController extends GetxController {
   var isConnected = true.obs;
   late StreamSubscription<InternetConnectionStatus> listener;
+  StreamSubscription<DocumentSnapshot>? _userStatusSubscription;
 
   RxBool isActive = RxBool(true);
   Rx<DateTime?> lastLogin = Rx<DateTime?>(null);
@@ -23,7 +24,8 @@ class NetworkController extends GetxController {
       return;
     }
 
-    FirebaseFirestore.instance
+    _userStatusSubscription?.cancel();
+    _userStatusSubscription = FirebaseFirestore.instance
         .collection(USER_DETAILS)
         .doc(user.uid)
         .snapshots()
@@ -89,6 +91,7 @@ class NetworkController extends GetxController {
   @override
   void onClose() {
     listener.cancel();
+    _userStatusSubscription?.cancel();
     super.onClose();
   }
 }

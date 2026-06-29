@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:parrot_messaging/_gobal-supply/_internetConnection.dart';
 
 class LocalImagesDecoration extends StatelessWidget {
   final String imageName;

@@ -12,7 +12,6 @@ class Loginscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController phoneController = TextEditingController();
     final phoneVerifiedController = Get.put(
       Authverificationwithphoneandsignin(),
     );
