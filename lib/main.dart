@@ -15,6 +15,7 @@ void main() async {
   // Firebase initialize
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+
   // GetStorage initialize
   await GetStorage.init();
   

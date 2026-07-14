@@ -58,7 +58,15 @@ class ChatBarStyleLogedUser extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            NetworkImages(imageName: userPhoto, size: 30),
+            // userPhoto.isEmpty
+            //     ? NetworkImage(
+            //   userData.photoUrl.value,
+            // )
+            //     : const AssetImage(
+            //   "assets/parrot.png",
+            // )
+            // as ImageProvider,
+             NetworkImages(imageName: userPhoto, size: 30),
           ],
         ),
       ),

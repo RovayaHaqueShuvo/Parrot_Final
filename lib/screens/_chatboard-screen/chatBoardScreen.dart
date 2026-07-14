@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import '../../_Firebase_ChatService/Chat_Model_Class/_massageModel.dart';
 import '../../firebase-Database/FirebaseDataBase.dart';
 import '../../_Firebase_ChatService/_chatServiceGetX.dart';
 
+import '../../firebase-Database/currrentUserDataModify.dart';
 import '../../getX/_userPresenceService.dart';
 import '../../globalWidget/_customWidget.dart';
 import '_chatBarStyleGlobalUser.dart';
@@ -82,6 +84,7 @@ class Chatboardscreen extends StatelessWidget {
     final FirebaseDataBase controllerCurrentLogged = Get.put(
       FirebaseDataBase(),
     );
+    final currentuserData = Get.put(Currrentuserdatamodify());
 
     return SafeArea(
       child: Scaffold(
@@ -89,9 +92,32 @@ class Chatboardscreen extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: const Color(0xFF1D4321),
-          leading: IconButton(
-            onPressed: () => Navigator.of(Get.overlayContext!).pop(),
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+          leadingWidth: 90,
+          // extra space দেওয়া হলো IconButton + Avatar-এর জন্য
+          leading: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+              ),
+              CircleAvatar(
+                radius: 19,
+                backgroundColor: Colors.white,
+                child: ClipOval(
+                  child: photoUrl.isNotEmpty
+                      ? CachedNetworkImage(
+                    imageUrl: photoUrl,
+                    width: 34,
+                    height: 34,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => const CircularProgressIndicator(strokeWidth: 2),
+                    errorWidget: (context, url, error) => Image.asset("assets/parrot.png"),
+                  )
+                      : Image.asset("assets/parrot.png", width: 34, height: 34, fit: BoxFit.cover),
+                ),
+              ),
+            ],
           ),
           title: InkWell(
             onTap: () {
@@ -106,53 +132,49 @@ class Chatboardscreen extends StatelessWidget {
                 ),
               );
             },
-            child: Row(
-              children: [
-                NetworkImages(imageName: photoUrl, size: 45),
-                const SizedBox(width: 10),
-                StreamBuilder<DocumentSnapshot>(
-                  stream:
-                      FirebaseFirestore.instance
-                          .collection(USER_DETAILS)
-                          .doc(uid)
-                          .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const Text(
-                        "Loading...",
-                        style: TextStyle(color: Colors.white),
-                      );
-                    }
-                    final status = controller.presenceService
-                        .getStatusFromSnapshot(snapshot.data!);
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          status == 'online' ? 'Online' : 'Offline',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color:
-                                status == 'online'
-                                    ? Colors.greenAccent
-                                    : Colors.grey,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ],
+            child: StreamBuilder<DocumentSnapshot>(
+              stream:
+                  FirebaseFirestore.instance
+                      .collection(USER_DETAILS)
+                      .doc(uid)
+                      .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Text(
+                    "Loading...",
+                    style: TextStyle(color: Colors.white),
+                  );
+                }
+                final status = controller.presenceService.getStatusFromSnapshot(
+                  snapshot.data!,
+                );
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      name,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      status == 'online' ? 'Online' : 'Offline',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color:
+                            status == 'online'
+                                ? Colors.greenAccent
+                                : Colors.grey,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           actions: [
@@ -161,13 +183,16 @@ class Chatboardscreen extends StatelessWidget {
               icon: const Icon(Icons.call, color: Colors.white),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+
+              },
               icon: const Icon(Icons.videocam, color: Colors.white),
             ),
           ],
         ),
         body: Column(
           children: [
+            // ─── Messages Stream (MessageModel list) ───────────────────
             // ─── Messages Stream (MessageModel list) ───────────────────
             Expanded(
               child: StreamBuilder<List<MessageModel>>(
@@ -178,7 +203,6 @@ class Chatboardscreen extends StatelessWidget {
                   }
 
                   final messages = snapshot.data!;
-
                   // Unread count (isRead field ব্যবহার)
                   final unreadCount =
                       messages
@@ -232,10 +256,7 @@ class Chatboardscreen extends StatelessWidget {
                               children: [
                                 isMe
                                     ? ChatBarStyleLogedUser(
-                                      userPhoto:
-                                          controllerCurrentLogged
-                                              .photourl
-                                              .value,
+                                      userPhoto: currentuserData.photoUrl.value,
                                       massage: msg.text, // 'message' → 'text'
                                       sentTime: formattedTime,
                                     )

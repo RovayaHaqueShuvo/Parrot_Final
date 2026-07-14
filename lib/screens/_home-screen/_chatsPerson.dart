@@ -37,9 +37,9 @@ class MessageTile extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
-                    maxLines: 1, // 👉 এক লাইনে সীমাবদ্ধ করবে
+                    maxLines: 1,
                     overflow:
-                        TextOverflow.ellipsis, // 👉 অতিরিক্ত হলে "..." দেখাবে
+                        TextOverflow.ellipsis,
                   )
                   : Text(
                     "Parrot",
